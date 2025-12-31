@@ -10,7 +10,41 @@ import Tab from "@mui/material/Tab";
 
 function CreateEvents() {
     const [step, setStep] = useState(1);
+    const [basicInfo, setBasicInfo] = useState({
+        eventName: "",
+        image: null,
+        // location: null,
+        startDate: null,
+        endDate: null,
+        capacity: "",
+        tags: "",
+        description: "",
+    })
 
+    
+  const [basicInfoErrors, setBasicInfoErrors] = useState({});
+  const [basicInfoCompleted, setBasicInfoCompleted] = useState(false);
+
+  const validateBasicInfo = () => {
+    const errors = {};
+
+    if (!basicInfo.eventName) errors.eventName = "Event name is required";
+    // if (!basicInfo.image) errors.image = "Event image is required";
+    // if (!basicInfo.location) errors.location = "Location is required";
+    if (!basicInfo.startDate) errors.startDate = "Start date is required";
+    if (!basicInfo.endDate) errors.endDate = "End date is required";
+    if (!basicInfo.capacity) errors.capacity = "Capacity is required";
+
+    setBasicInfoErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleBasicInfoNext = () => {
+    if (validateBasicInfo()) {
+      setBasicInfoCompleted(true);
+      setStep(1);
+    }
+  };
     return (
         <Box display="flex" justifyContent="center">
             {/* Shared width container */}
@@ -47,17 +81,17 @@ function CreateEvents() {
                             <Tab label="Basic Information" />
                             <Tab
                                 label="Packages"
-                            // disabled={!basicInfoCompleted}
+                                disabled={!basicInfoCompleted}
                             />
                         </Tabs>
 
                         <Box p={2}>
                             {step === 0 && (
                                 <EventBasicInfo
-                                    onComplete={() => {
-                                        setBasicInfoCompleted(true);
-                                        setStep(1); // move to packages
-                                    }}
+                                    values={basicInfo}
+                                    setValues={setBasicInfo}
+                                    errors={basicInfoErrors}
+                                    onNext={handleBasicInfoNext}
                                 />
                             )}
 

@@ -7,13 +7,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
 import EventLocationPicker from "../../components/EventLocationPicker";
-import  Editor  from "../../components/Editor"
+import Editor from "../../components/Editor"
 
-function EventBasicInfo() {
-    const [description, setDescription] = useState("");
-    const [startDate, setStartDate] = useState(dayjs());
-    const [endDate, setEndDate] = useState(dayjs());
-    const [location, setLocation] = useState(null);
+function EventBasicInfo({ values, setValues, errors, onNext }) {
+
 
     return (
         <Stack
@@ -31,6 +28,11 @@ function EventBasicInfo() {
                             name="eventName"
                             required
                             fullWidth
+                            value={values.eventName}
+                            onChange={(e) =>
+                                setValues({ ...values, eventName: e.target.value })
+                            }
+                            error={!!errors.eventName}
                         />
                     </Stack>
 
@@ -38,7 +40,13 @@ function EventBasicInfo() {
                     <Stack spacing={1} width="100%">
                         <Typography fontWeight={700}>Upload Image</Typography>
                         <Box>
-                            <EventImageUpload />
+                            <EventImageUpload
+                                error={errors.image}
+                                onChange={(img) => setValues({ ...values, image: img })}
+                            />
+                            {errors.image && (
+                                <Typography color="error">{errors.image}</Typography>
+                            )}
                         </Box>
                     </Stack>
                 </Stack>
@@ -46,9 +54,14 @@ function EventBasicInfo() {
                 {/* Event Location */}
                 <Stack spacing={1} flex={1} minWidth={0}>
                     <Typography fontWeight={700}>Event Location</Typography>
-                    <EventLocationPicker
-                        onLocationSelect={(loc) => setLocation(loc)}
+                    {/* <EventLocationPicker
+                        onLocationSelect={(loc) =>
+                            setValues({ ...values, location: loc })
+                        }
                     />
+                    {errors.location && (
+                        <Typography color="error">{errors.location}</Typography>
+                    )} */}
                 </Stack>
             </Stack>
 
@@ -63,8 +76,10 @@ function EventBasicInfo() {
                     <Stack spacing={1} flex={1} minWidth={0}>
                         <Typography fontWeight={700}>Start Date & Time</Typography>
                         <DateTimePicker
-                            value={startDate}
-                            onChange={setStartDate}
+                            value={values.startDate}
+                            onChange={(val) =>
+                                setValues({ ...values, startDate: val })
+                            }
                             renderInput={(props) => <TextField {...props} fullWidth />}
                         />
                     </Stack>
@@ -72,8 +87,10 @@ function EventBasicInfo() {
                     <Stack spacing={1} flex={1} minWidth={0}>
                         <Typography fontWeight={700}>End Date & Time</Typography>
                         <DateTimePicker
-                            value={endDate}
-                            onChange={setEndDate}
+                            value={values.endDate}
+                            onChange={(val) =>
+                                setValues({ ...values, endDate: val })
+                            }
                             renderInput={(props) => <TextField {...props} fullWidth />}
                         />
                     </Stack>
@@ -93,6 +110,11 @@ function EventBasicInfo() {
                         type="number"
                         name="capacity"
                         fullWidth
+                        value={values.capacity}
+                        onChange={(e) =>
+                            setValues({ ...values, capacity: e.target.value })
+                        }
+                        error={!!errors.capacity}
                     />
                 </Stack>
 
@@ -101,11 +123,20 @@ function EventBasicInfo() {
                     <TextField
                         name="tags"
                         fullWidth
+                        value={values.tags}
+                        onChange={(e) =>
+                            setValues({ ...values, tags: e.target.value })
+                        }
                     />
                 </Stack>
             </Stack>
             <Stack>
-                <Editor/>
+                <Editor
+                    value={values.description}
+                    onChange={(val) =>
+                        setValues({ ...values, description: val })
+                    }
+                />
             </Stack>
 
             {/* Buttons */}
@@ -116,7 +147,7 @@ function EventBasicInfo() {
                 width="100%"
             >
                 <PrimaryButton>Cancel</PrimaryButton>
-                <PrimaryButton>Next</PrimaryButton>
+                <PrimaryButton  onClick={onNext} > Next</PrimaryButton>
             </Stack>
         </Stack>
     );
