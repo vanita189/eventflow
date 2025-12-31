@@ -30,21 +30,15 @@ function EventImageUpload() {
             onClick={() => inputRef.current.click()}
             sx={{
                 width: "100%",
+                height: "100%",
                 border: "1.5px dashed #ccc",
                 borderRadius: 2,
-                height:"260px",              // padding:"10px 0px",
-
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxSizing: "border-box",
                 position: "relative",
-                overflow: "hidden",             // ✅ critical
-                "&:hover": {
-                    borderColor: "primary.main",
-                    backgroundColor: "#fafafa",
-                },
+                overflow: "hidden",
             }}
         >
             {image ? (
@@ -56,7 +50,7 @@ function EventImageUpload() {
                         sx={{
                             width: "100%",
                             height: "100%",
-                            objectFit: "cover",
+                            objectFit: "contain",   // ✅ FULL image visible
                             borderRadius: 2,
                         }}
                     />

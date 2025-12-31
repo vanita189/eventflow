@@ -9,11 +9,11 @@ function Editor({
 }) {
   return (
     <Box>
-      {label && (
+      {/* {label && (
         <Typography mb={1} fontWeight={500}>
           {label}
         </Typography>
-      )}
+      )} */}
 
       <TextField
         multiline

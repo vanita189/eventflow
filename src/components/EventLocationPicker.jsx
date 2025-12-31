@@ -82,7 +82,7 @@ function EventLocationPicker({ onLocationSelect }) {
         borderRadius: "10px",
         padding: "12px",
         maxWidth: "500px",
-        margin: "auto",
+        // margin: "auto",
         backgroundColor: "#fafafa",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}

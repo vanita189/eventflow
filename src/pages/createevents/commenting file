@@ -1,0 +1,266 @@
+// import Box from "@mui/material/Box";
+// import Typography from "@mui/material/Typography";
+// import Button from "@mui/material/Button";
+// import Paper from "@mui/material/Paper";
+// import EventBasicInfo from "./EventBasicInfo";
+// import EventPackage from "./EventPackage";
+// import { useState } from "react";
+// import Tabs from "@mui/material/Tabs";
+// import Tab from "@mui/material/Tab";
+
+// function CreateEvents() {
+//     const [step, setStep] = useState(1);
+//     const [basicInfo, setBasicInfo] = useState({
+//         eventName: "",
+//         image: null,
+//         // location: null,
+//         startDate: null,
+//         endDate: null,
+//         capacity: "",
+//         tags: "",
+//         description: "",
+//     })
+
+
+//   const [basicInfoErrors, setBasicInfoErrors] = useState({});
+//   const [basicInfoCompleted, setBasicInfoCompleted] = useState(false);
+
+//   const validateBasicInfo = () => {
+//     const errors = {};
+
+//     if (!basicInfo.eventName) errors.eventName = "Event name is required";
+//     if (!basicInfo.image) errors.image = "Event image is required";
+//     // if (!basicInfo.location) errors.location = "Location is required";
+//     if (!basicInfo.startDate) errors.startDate = "Start date is required";
+//     if (!basicInfo.endDate) errors.endDate = "End date is required";
+//     if (!basicInfo.capacity) errors.capacity = "Capacity is required";
+
+//     setBasicInfoErrors(errors);
+//     return Object.keys(errors).length === 0;
+//   };
+
+//   const handleBasicInfoNext = () => {
+//     if (validateBasicInfo()) {
+//       setBasicInfoCompleted(true);
+//       setStep(1);
+//     }
+//   };
+//     return (
+//         <Box display="flex" justifyContent="center">
+//             {/* Shared width container */}
+//             <Box sx={{ width: { md: "80%", xs: "100%" } }}>
+//                 <Box display="flex" justifyContent="space-between" mb={1}>
+//                     <Typography>Create Event</Typography>
+//                     <Button>Event Name</Button>
+//                 </Box>
+
+//                 <Paper
+//                     elevation={2}
+//                     sx={{
+//                         width: "100%",     // ⬅️ takes same width as header
+//                         borderRadius: 2,
+//                     }}
+//                 >
+//                     {/* Tabs */}
+//                     <Box p={2} sx={{ border: 1, borderColor: "divider" }}>
+//                         <Tabs
+//                             variant="fullWidth"
+//                             sx={{
+//                                 borderBottom: 1.5,
+//                                 borderColor: "divider",
+//                                 justifyContent: "center",
+//                                 display: "flex",
+//                                 "& .MuiTab-root:focus": {
+//                                     outline: "none",
+//                                 },
+
+//                             }}
+//                             value={step}
+//                             onChange={(_, value) => setStep(value)}
+//                         >
+//                             <Tab label="Basic Information" />
+//                             <Tab
+//                                 label="Packages"
+//                                 disabled={!basicInfoCompleted}
+//                             />
+//                         </Tabs>
+
+//                         <Box p={2}>
+//                             {step === 0 && (
+//                                 <EventBasicInfo
+//                                     values={basicInfo}
+//                                     setValues={setBasicInfo}
+//                                     errors={basicInfoErrors}
+//                                     onNext={handleBasicInfoNext}
+//                                 />
+//                             )}
+
+//                             {step === 1 && <EventPackage />}
+//                         </Box>
+//                     </Box>
+//                 </Paper>
+//             </Box>
+//         </Box>
+//     );
+// }
+
+// export default CreateEvents;
+
+// import { useState } from "react";
+// import { Stack, TextField, Typography, Box } from "@mui/material";
+// import PrimaryButton from "../../components/PrimaryButton";
+// import EventImageUpload from "../../components/EventImageUpload";
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+// import dayjs from 'dayjs';
+// import EventLocationPicker from "../../components/EventLocationPicker";
+// import Editor from "../../components/Editor"
+
+// function EventBasicInfo({ values, setValues, errors, onNext }) {
+
+
+//     return (
+//         <Stack
+//             spacing={2}
+//             width="100%"
+//             sx={{ overflowX: "hidden" }} // corrected
+//         >
+//             <Stack flexDirection={{ xs: "column", md: "row" }} spacing={2} gap={5} width="100%">
+//                 <Stack spacing={2} flex={1} minWidth={0}>
+//                     {/* Event Name */}
+//                     <Stack spacing={1} width="100%">
+//                         <Typography fontWeight={700}>Event Name</Typography>
+//                         <TextField
+//                             placeholder="Event Name"
+//                             name="eventName"
+//                             required
+//                             fullWidth
+//                             value={values.eventName}
+//                             onChange={(e) =>
+//                                 setValues({ ...values, eventName: e.target.value })
+//                             }
+//                             error={!!errors.eventName}
+//                         />
+//                     </Stack>
+
+//                     {/* Upload Image */}
+//                     <Stack spacing={1} width="100%">
+//                         <Typography fontWeight={700}>Upload Image</Typography>
+//                         <Box>
+//                             <EventImageUpload
+//                                 value={values.image}   // ✅ pass file
+
+//                                 error={errors.image}
+//                                 onChange={(img) => setValues({ ...values, image: img })}
+//                             />
+//                             {errors.image && (
+//                                 <Typography color="error">{errors.image}</Typography>
+//                             )}
+//                         </Box>
+//                     </Stack>
+//                 </Stack>
+
+//                 {/* Event Location */}
+//                 <Stack spacing={1} flex={1} minWidth={0}>
+//                     <Typography fontWeight={700}>Event Location</Typography>
+//                     {/* <EventLocationPicker
+//                         onLocationSelect={(loc) =>
+//                             setValues({ ...values, location: loc })
+//                         }
+//                     />
+//                     {errors.location && (
+//                         <Typography color="error">{errors.location}</Typography>
+//                     )} */}
+//                 </Stack>
+//             </Stack>
+
+//             {/* Start & End Date */}
+//             <LocalizationProvider dateAdapter={AdapterDayjs}>
+//                 <Stack
+//                     direction={{ xs: "column", md: "row" }}
+//                     spacing={2}
+//                     gap={5}
+//                     width="100%"
+//                 >
+//                     <Stack spacing={1} flex={1} minWidth={0}>
+//                         <Typography fontWeight={700}>Start Date & Time</Typography>
+//                         <DateTimePicker
+//                             value={values.startDate}
+//                             onChange={(val) =>
+//                                 setValues({ ...values, startDate: val })
+//                             }
+//                             renderInput={(props) => <TextField {...props} fullWidth />}
+//                         />
+//                     </Stack>
+
+//                     <Stack spacing={1} flex={1} minWidth={0}>
+//                         <Typography fontWeight={700}>End Date & Time</Typography>
+//                         <DateTimePicker
+//                             value={values.endDate}
+//                             onChange={(val) =>
+//                                 setValues({ ...values, endDate: val })
+//                             }
+//                             renderInput={(props) => <TextField {...props} fullWidth />}
+//                         />
+//                     </Stack>
+//                 </Stack>
+//             </LocalizationProvider>
+
+//             {/* Capacity & Tags */}
+//             <Stack
+//                 direction={{ xs: "column", md: "row" }}
+//                 spacing={2}
+//                 gap={5}
+//                 width="100%"
+//             >
+//                 <Stack spacing={1} flex={1} minWidth={0}>
+//                     <Typography fontWeight={700}>Total Capacity</Typography>
+//                     <TextField
+//                         type="number"
+//                         name="capacity"
+//                         fullWidth
+//                         value={values.capacity}
+//                         onChange={(e) =>
+//                             setValues({ ...values, capacity: e.target.value })
+//                         }
+//                         error={!!errors.capacity}
+//                     />
+//                 </Stack>
+
+//                 <Stack spacing={1} flex={1} minWidth={0}>
+//                     <Typography fontWeight={700}>Event Tags (comma separated)</Typography>
+//                     <TextField
+//                         name="tags"
+//                         fullWidth
+//                         value={values.tags}
+//                         onChange={(e) =>
+//                             setValues({ ...values, tags: e.target.value })
+//                         }
+//                     />
+//                 </Stack>
+//             </Stack>
+//             <Stack>
+//                 <Editor
+//                     value={values.description}
+//                     onChange={(val) =>
+//                         setValues({ ...values, description: val })
+//                     }
+//                 />
+//             </Stack>
+
+//             {/* Buttons */}
+//             <Stack
+//                 direction="row"
+//                 justifyContent="space-between"
+//                 mt={3}
+//                 width="100%"
+//             >
+//                 <PrimaryButton>Cancel</PrimaryButton>
+//                 <PrimaryButton onClick={onNext} > Next</PrimaryButton>
+//             </Stack>
+//         </Stack>
+//     );
+// }
+
+// export default EventBasicInfo;
