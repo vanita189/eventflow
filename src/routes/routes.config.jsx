@@ -5,7 +5,7 @@ import Dashboard from "../subpages/Dashboard/Dashboard";
 import Event from "../subpages/events/Event";
 import Ticket from "../subpages/Tickets/Ticket";
 import Report from "../subpages/report/Report";
-import User from "../subpages/users/user";
+import User from "../subpages/users/User";
 import CreateEvents from "../pages/createevents/CreateEvents";
 
 export const publicRoutes = [

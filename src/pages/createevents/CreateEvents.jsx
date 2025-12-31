@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
-import EventBasicInfo from "./EventBasicinfo";
+import EventBasicInfo from "./EventBasicInfo";
 import EventPackage from "./EventPackage";
 import { useState } from "react";
 import Tabs from "@mui/material/Tabs";
