@@ -29,7 +29,7 @@ const DataTable = ({
       <TableContainer
         sx={{
           maxWidth:
-            "90vw"
+            "80vw"
           ,
           height: {
             xs: "60vh",     // mobile → scroll INSIDE table
