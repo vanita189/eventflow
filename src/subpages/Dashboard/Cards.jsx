@@ -77,7 +77,7 @@ function Cards() {
                             width: {
                                 xs: 155,   // mobile → SAME size for all cards
                                 sm: 160,
-                                md: 250,
+                                md: 300,
                             },
                             height: {
                                 xs: 110,   // mobile → SAME height
