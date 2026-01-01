@@ -69,7 +69,7 @@ function Cards() {
                 </Menu>
 
             </Box>
-            <Box display="flex" gap={2} flexWrap="wrap" justifyContent="space-between" mt={1}>
+            <Box display="flex" gap={2}   mt={1}>
                 {cards.map((card) => (
                     <Card
                         key={card.id}
@@ -77,7 +77,7 @@ function Cards() {
                             width: {
                                 xs: 155,   // mobile → SAME size for all cards
                                 sm: 160,
-                                md: 300,
+                                md: 280,
                             },
                             height: {
                                 xs: 110,   // mobile → SAME height
