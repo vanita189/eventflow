@@ -12,46 +12,61 @@ import EventBasicInfo from "./EventBasicInfo"
 
 function CreateEvents() {
     const [step, setStep] = useState(0)
+    const [eventDetails, setEventDetails] = useState({
+        eventName: "",
+        eventImage: null,
+        eventLocation: null,
+        eventStartDate: null,
+        eventEndDate: null,
+        ticketStartDate: null,
+        ticketEndDate: null,
+        eventCapacity: "",
+        eventTags: "",
+        eventDescription: ""
+    })
+    const [packageDetails, setPackageDetails] = useState([])
 
     const handleTabChange = (event, newValue) => {
         setStep(newValue)
     }
     return (
-        <Stack sx={{ display: "flex", alignItems: "center" }} >
-            <Stack sx={{ maxWidth: { lg: "80%", md: "100%" }, width: "100%" }}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                    <Box display="flex" alignItems="center" gap={1}>
-                        <EventIcon />
-                        <Typography variant="h6" fontWeight={500} color="#5866f8ff">
-                            Create Event
-                        </Typography>
+        <form>
+            <Stack sx={{ display: "flex", alignItems: "center" }} >
+                <Stack sx={{ maxWidth: { lg: "80%", md: "100%" }, width: "100%" }}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                        <Box display="flex" alignItems="center" gap={1}>
+                            <EventIcon />
+                            <Typography variant="h6" fontWeight={500} color="#5866f8ff">
+                                Create Event
+                            </Typography>
+                        </Box>
+
+                        <PrimaryButton>
+                            Current Event
+                        </PrimaryButton>
+
                     </Box>
 
-                    <PrimaryButton>
-                        Current Event
-                    </PrimaryButton>
+                    <Paper sx={{
+                        p: "16px 32px", // top-bottom | left-right
+                        border: "0.5px solid #cfcbcbff", borderRadius: 2
+                    }}>
+                        <Box sx={{ borderBottom: "1px solid #ccc" }}>
+                            <Tabs value={step} onChange={handleTabChange} variant="fullWidth">
+                                <Tab sx={{ fontWeight: 600 }} label=" Event Basic Information" />
+                                <Tab sx={{ fontWeight: 600 }} label="Event Package Information" />
 
-                </Box>
+                            </Tabs>
+                        </Box>
 
-                <Paper sx={{
-                    p: "16px 32px", // top-bottom | left-right
-                    border: "0.5px solid #cfcbcbff", borderRadius: 2
-                }}>
-                    <Box sx={{ borderBottom: "1px solid #ccc" }}>
-                        <Tabs value={step} onChange={handleTabChange} variant="fullWidth">
-                            <Tab sx={{ fontWeight: 600 }} label=" Event Basic Information" />
-                            <Tab sx={{ fontWeight: 600 }} label="Event Package Information" />
-
-                        </Tabs>
-                    </Box>
-
-                    <Box mt={2}>
-                        {step === 0 && <EventBasicInfo />}
-                        {step === 1 && <EventPackage />}
-                    </Box>
-                </Paper>
+                        <Box mt={2}>
+                            {step === 0 && <EventBasicInfo eventDetails={eventDetails} setEventDetails={setEventDetails} />}
+                            {step === 1 && <EventPackage packageDetails={packageDetails} setPackageDetails={setPackageDetails} />}
+                        </Box>
+                    </Paper>
+                </Stack>
             </Stack>
-        </Stack>
+        </form>
     )
 }
 

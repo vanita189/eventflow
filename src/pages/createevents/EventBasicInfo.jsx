@@ -6,6 +6,7 @@ import { Box } from "@mui/material"
 import EventLocationPicker from "../../components/EventLocationPicker"
 import Editor from "../../components/Editor"
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import PrimaryButton from '../../components/PrimaryButton';
 
 function EventBasicInfo() {
     return (
@@ -104,6 +105,14 @@ function EventBasicInfo() {
                     <Typography fontWeight={600} >Event Description</Typography>
                     <Editor />
                 </Box>
+            </Stack>
+            <Stack justifyContent="space-between" flexDirection="row">
+                <PrimaryButton sx={{padding:"12px 50px"}}>
+                        Cancel
+                </PrimaryButton>
+                <PrimaryButton sx={{padding:"12px 50px"}}>
+                        Next
+                </PrimaryButton>
             </Stack>
 
         </Stack>
