@@ -12,9 +12,44 @@ const ENTRY_TYPES = [
     "Couple Entry"
 ]
 
-function EventPackage() {
+function EventPackage({ packageDetails, setPackageDetails }) {
     const [entryType, setEntryType] = useState(0);
     const isFreeEntry = entryType === 0;
+
+    const [form, setForm] = useState({
+        packageName: ENTRY_TYPES[0],
+        price: "",
+        allowedPersons: "",
+        quantity: "",
+        description: ""
+    })
+
+    const [errors, setErrors] = useState({})
+
+    handleChange = (field) => (e) => {
+        setForm({ ...form, field: e.target.value })
+    }
+
+    const validatePackage = () => {
+        const newErrors = {}
+
+        if (!form.packageName) newErrors.packageName = "Package name is required"
+
+        if (!isFreeEntry && !form.price) {
+            newErrors.price = "Price is required"
+        }
+
+        if (!form.allowedPersons) {
+            newErrors.allowedPersons = "Allowed persons required"
+        }
+
+        if (!form.quantity) {
+            newErrors.quantity = "Quantity is required"
+        }
+
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
     return (
         <Stack spacing={4}>
             <Box>
@@ -22,7 +57,7 @@ function EventPackage() {
                 <Tabs value={entryType}
                     onChange={(e, val) => setEntryType(val)}
                     variant="fullWidth"
-                    sx={{borderBottom:"1px solid #ccc"}}
+                    sx={{ borderBottom: "1px solid #ccc" }}
                 >
                     {
                         ENTRY_TYPES.map((type) => (
@@ -42,7 +77,11 @@ function EventPackage() {
                     <Stack direction="row" spacing={4}>
                         <Box flex={1}>
                             <Typography fontWeight={600}>Package Name</Typography>
-                            <TextField fullWidth value={ENTRY_TYPES[entryType]} />
+                            <TextField
+                                fullWidth
+                                error={!!errors.packageName}
+                                helperText={errors.packageName}
+                                value={ENTRY_TYPES[entryType]} />
                         </Box>
 
                         <Box flex={1}>
@@ -50,6 +89,10 @@ function EventPackage() {
                             <TextField
                                 fullWidth
                                 type="number"
+                                value={form.price}
+                                onChange={handleChange("price")}
+                                error={!!errors.price}
+                                helperText={errors.price}
                                 disabled={isFreeEntry}
                                 placeholder={isFreeEntry ? "Free Entry" : "Enter Amount"}
                             />
@@ -63,6 +106,10 @@ function EventPackage() {
                                 fullWidth
                                 type="number"
                                 placeholder="Eg:1/2"
+                                value={form.allowedPersons}
+                                onChange={handleChange("allowedPersons")}
+                                error={!!errors.allowedPersons}
+                                helperText={errors.allowedPersons}
                             />
 
                         </Box>
@@ -85,7 +132,18 @@ function EventPackage() {
                 </Stack>
             </Paper>
             <Stack direction="row" justifyContent="space-between">
-                <PrimaryButton sx={{ padding: "12px 50px" }}>
+                <PrimaryButton
+                    onClick={() => {
+                        if (!validatePackage()) return;
+
+                        setPackageDetails(prev => [...prev, {
+                            ...form,
+                            entryType: ENTRY_TYPES[entryType]
+                        }]);
+
+                        alert("Package Added Successfully");
+                    }}
+                    sx={{ padding: "12px 50px" }}>
                     Previous
                 </PrimaryButton>
                 <PrimaryButton sx={{ padding: "12px 50px" }}>

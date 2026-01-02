@@ -9,6 +9,9 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import EventPackage from "./EventPackage";
 import EventBasicInfo from "./EventBasicInfo"
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+
 
 function CreateEvents() {
     const [step, setStep] = useState(0)
@@ -71,9 +74,9 @@ function CreateEvents() {
                             </Typography>
                         </Box>
 
-                        <PrimaryButton>
+                        {/* <PrimaryButton>
                             Current Event
-                        </PrimaryButton>
+                        </PrimaryButton> */}
 
                     </Box>
 
