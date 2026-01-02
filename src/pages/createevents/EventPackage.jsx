@@ -21,7 +21,8 @@ function EventPackage() {
                 <Typography fontWeight={600}>Entry Type</Typography>
                 <Tabs value={entryType}
                     onChange={(e, val) => setEntryType(val)}
-                    variant="scrollable"
+                    variant="fullWidth"
+                    sx={{borderBottom:"1px solid #ccc"}}
                 >
                     {
                         ENTRY_TYPES.map((type) => (

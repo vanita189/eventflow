@@ -26,7 +26,37 @@ function CreateEvents() {
     })
     const [packageDetails, setPackageDetails] = useState([])
 
+    const isBasicInfoValid = () => {
+        return (
+            eventDetails.eventName &&
+            eventDetails.eventImage &&
+            eventDetails.eventLocation &&
+            eventDetails.eventStartDate &&
+            eventDetails.eventEndDate &&
+            eventDetails.ticketStartDate &&
+            eventDetails.ticketEndDate &&
+            eventDetails.eventCapacity &&
+            eventDetails.eventTags &&
+            eventDetails.eventDescription
+        )
+    }
+
+    const [errors, setErrors] = useState({})
+    const validateBasicInfo = () => {
+        const newErrors = {}
+
+        if (!eventDetails.eventName) newErrors.eventName = "Event name is required";
+        if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0
+    }
+
     const handleTabChange = (event, newValue) => {
+        if (newValue === 1 && !isBasicInfoValid()) {
+            alert("Please Complete Event Basic Information First")
+            return
+        }
         setStep(newValue)
     }
     return (
@@ -60,8 +90,20 @@ function CreateEvents() {
                         </Box>
 
                         <Box mt={2}>
-                            {step === 0 && <EventBasicInfo eventDetails={eventDetails} setEventDetails={setEventDetails} />}
-                            {step === 1 && <EventPackage packageDetails={packageDetails} setPackageDetails={setPackageDetails} />}
+                            {step === 0 &&
+                                <EventBasicInfo
+                                    eventDetails={eventDetails}
+                                    setEventDetails={setEventDetails}
+                                    setStep={setStep}
+                                    validateBasicInfo={validateBasicInfo}
+                                />
+                            }
+                            {step === 1 &&
+                                <EventPackage
+                                    packageDetails={packageDetails}
+                                    setPackageDetails={setPackageDetails}
+                                />
+                            }
                         </Box>
                     </Paper>
                 </Stack>

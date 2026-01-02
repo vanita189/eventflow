@@ -8,25 +8,43 @@ import Editor from "../../components/Editor"
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import PrimaryButton from '../../components/PrimaryButton';
 
-function EventBasicInfo() {
+function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setStep }) {
     return (
         <Stack spacing={4} >
             <Stack direction="row" justifyContent="space-evenly" gap={5}>
                 <Stack spacing={3} flex={1} mb={2}>
                     <Box>
                         <Typography fontWeight={600} >Event Name</Typography>
-                        <TextField placeholder="Enter Event Name" fullWidth required />
+                        <TextField
+                            value={eventDetails.eventName}
+                            onChange={(e) => (
+                                setEventDetails({ ...eventDetails, eventName: e.target.value })
+                            )}
+                            placeholder="Enter Event Name"
+                            fullWidth
+                            
+                        />
                     </Box>
                     <Box height={280}>
                         <Typography fontWeight={600} >Event Image</Typography>
-                        <EventImageUpload />
+                        <EventImageUpload
+                            value={eventDetails.eventImage}
+                            onChange={(image) => {
+                                setEventDetails({ ...eventDetails, eventImage: image })
+                            }}
+                        />
                     </Box>
                 </Stack>
                 <Stack flex={1}>
                     <Box>
                         <Typography fontWeight={600} >Event Location</Typography>
 
-                        <EventLocationPicker />
+                        <EventLocationPicker
+                            value={eventDetails.eventLocation}
+                            onChange={(location) => (
+                                setEventDetails({ ...eventDetails, eventLocation: location })
+                            )}
+                        />
                     </Box>
                 </Stack>
             </Stack>
@@ -35,8 +53,11 @@ function EventBasicInfo() {
                 <Box flex={1}>
                     <Typography fontWeight={600} >Event Start Date</Typography>
                     <DateTimePicker
+                        value={eventDetails.eventStartDate}
+                        onChange={(newValue) => setEventDetails({
+                            ...eventDetails, eventStartDate: newValue
+                        })}
                         disablePast
-
                         slotProps={{
                             textField: {
                                 fullWidth: true,
@@ -47,8 +68,11 @@ function EventBasicInfo() {
                 <Box flex={1}>
                     <Typography fontWeight={600} >Event End Date</Typography>
                     <DateTimePicker
+                        value={eventDetails.eventEndDate}
+                        onChange={(newValue) => setEventDetails({
+                            ...eventDetails, eventEndDate: newValue
+                        })}
                         disablePast
-
                         slotProps={{
                             textField: {
                                 fullWidth: true,
@@ -63,8 +87,11 @@ function EventBasicInfo() {
                 <Box flex={1}>
                     <Typography fontWeight={600} >Ticket Distribution Start Date</Typography>
                     <DateTimePicker
+                        value={eventDetails.ticketStartDate}
+                        onChange={(newValue) => setEventDetails({
+                            ...eventDetails, ticketStartDate: newValue
+                        })}
                         disablePast
-
                         slotProps={{
                             textField: {
                                 fullWidth: true,
@@ -75,8 +102,11 @@ function EventBasicInfo() {
                 <Box flex={1}>
                     <Typography fontWeight={600} >Ticket Distribution End Date</Typography>
                     <DateTimePicker
+                        value={eventDetails.ticketEndDate}
+                        onChange={(newValue) => setEventDetails({
+                            ...eventDetails, ticketEndDate: newValue
+                        })}
                         disablePast
-
                         slotProps={{
                             textField: {
                                 fullWidth: true,
@@ -90,11 +120,25 @@ function EventBasicInfo() {
 
                 <Box flex={1}>
                     <Typography fontWeight={600} >Event Capacity</Typography>
-                    <TextField placeholder="Enter Event Name" fullWidth required />
+                    <TextField
+                        type="number"
+                        value={eventDetails.eventCapacity}
+                        onChange={(e) => setEventDetails({
+                            ...eventDetails, eventCapacity: e.target.value
+                        })}
+                        placeholder="Enter Event Name"
+                        fullWidth
+                        
+                    />
                 </Box>
                 <Box flex={1}>
                     <Typography fontWeight={600} >Event Tags</Typography>
-                    <TextField placeholder="Enter Event Name" fullWidth required />
+                    <TextField
+                        value={eventDetails.eventTags}
+                        onChange={(e) => setEventDetails({ ...eventDetails, eventTags: e.target.value })}
+                        placeholder="Enter Event Name"
+                        fullWidth
+                         />
                 </Box>
             </Stack>
 
@@ -103,15 +147,25 @@ function EventBasicInfo() {
 
                 <Box>
                     <Typography fontWeight={600} >Event Description</Typography>
-                    <Editor />
+                    <Editor
+                        value={eventDetails.eventDescription}
+                        onChange={(value) => setEventDetails({
+                            ...eventDetails, eventDescription: value
+                        })}
+                    />
                 </Box>
             </Stack>
             <Stack justifyContent="space-between" flexDirection="row">
-                <PrimaryButton sx={{padding:"12px 50px"}}>
-                        Cancel
+                <PrimaryButton sx={{ padding: "12px 50px" }}>
+                    Cancel
                 </PrimaryButton>
-                <PrimaryButton sx={{padding:"12px 50px"}}>
-                        Next
+                <PrimaryButton sx={{ padding: "12px 50px" }}
+                    onClick={() => {
+                        if (validateBasicInfo()) {
+                            setStep(1)
+                        }
+                    }}>
+                    Next
                 </PrimaryButton>
             </Stack>
 
