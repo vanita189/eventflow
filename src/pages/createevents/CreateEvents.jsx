@@ -15,7 +15,7 @@ import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 
 function CreateEvents() {
     const dispatch = useDispatch();
-    const [step, setStep] = useState(1)
+    const [step, setStep] = useState(0)
     const [eventDetails, setEventDetails] = useState({
         eventName: "",
         eventImage: null,
@@ -57,7 +57,6 @@ function CreateEvents() {
         } = eventDetails
 
         if (!eventDetails.eventName) newErrors.eventName = "Event name is required";
-        if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
         if (!eventDetails.eventImage)
             newErrors.eventImage = "Event image is required";
 

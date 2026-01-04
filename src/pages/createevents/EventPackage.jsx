@@ -106,6 +106,8 @@ function EventPackage({ setStep }) {
   const handleSubmitAll = () => {
     console.log("FINAL PAYLOAD 👉", packages);
     alert("All packages submitted!");
+    setPackageDetails(packages)
+
   };
 
   return (
