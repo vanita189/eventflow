@@ -9,11 +9,12 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import EventPackage from "./EventPackage";
 import EventBasicInfo from "./EventBasicInfo"
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 
 
 function CreateEvents() {
+    const dispatch = useDispatch();
     const [step, setStep] = useState(0)
     const [eventDetails, setEventDetails] = useState({
         eventName: "",
@@ -32,14 +33,14 @@ function CreateEvents() {
     const isBasicInfoValid = () => {
         return (
             eventDetails.eventName &&
-            eventDetails.eventImage &&
-            eventDetails.eventLocation &&
-            eventDetails.eventStartDate &&
-            eventDetails.eventEndDate &&
-            eventDetails.ticketStartDate &&
-            eventDetails.ticketEndDate &&
-            eventDetails.eventCapacity &&
-            eventDetails.eventTags &&
+            // eventDetails.eventImage &&
+            // eventDetails.eventLocation &&
+            // eventDetails.eventStartDate &&
+            // eventDetails.eventEndDate &&
+            // eventDetails.ticketStartDate &&
+            // eventDetails.ticketEndDate &&
+            // eventDetails.eventCapacity &&
+            // eventDetails.eventTags &&
             eventDetails.eventDescription
         )
     }
@@ -48,7 +49,7 @@ function CreateEvents() {
     const validateBasicInfo = () => {
         const newErrors = {}
 
-        const{
+        const {
             eventStartDate,
             eventEndDate,
             ticketStartDate,
@@ -56,24 +57,44 @@ function CreateEvents() {
         } = eventDetails
 
         if (!eventDetails.eventName) newErrors.eventName = "Event name is required";
-        if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
+        // if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
+        // if (!eventDetails.eventImage)
+        //     newErrors.eventImage = "Event image is required";
+
+        // if (!eventDetails.eventLocation)
+        //     newErrors.eventLocation = "Event location is required";
+
+        // if (!eventDetails.eventCapacity)
+        //     newErrors.eventCapacity = "Event capacity is required";
+
+        // if (!eventDetails.eventTags)
+        //     newErrors.eventTags = "Event tags are required";
+
+        if (!eventDetails.eventDescription)
+            newErrors.eventDescription = "Event description is required";
 
         //date validations
-        if(eventStartDate && eventEndDate && eventEndDate < eventStartDate){
-            newErrors.eventEndDate = "End date must be after start date"
+        // Event dates
+        if (eventStartDate && eventEndDate && eventEndDate < eventStartDate) {
+            newErrors.eventEndDate = "Event end date must be after start date";
         }
 
-        if(ticketStartDate && eventStartDate && ticketStartDate > eventStartDate){
-            newErrors.ticketStartDate = "Ticket start date must be before event start date"
+        // Ticket vs Event
+        if (ticketStartDate && eventStartDate && ticketStartDate > eventStartDate) {
+            newErrors.ticketStartDate =
+                "Ticket start date must be before event start date";
         }
 
-        if(ticketEndDate && eventEndDate && ticketEndDate < eventEndDate){
-            newErrors.ticketEndDate = "Ticket end date must be before event end date"
+        if (ticketEndDate && eventEndDate && ticketEndDate > eventEndDate) {
+            newErrors.ticketEndDate =
+                "Ticket end date must be before or equal to event end date";
         }
 
-        if(ticketStartDate && ticketEndDate && ticketEndDate < ticketStartDate){[
-            newErrors.ticketEndDate = "Ticket end date must be after ticket start date"
-        ]}
+        // Ticket range
+        if (ticketStartDate && ticketEndDate && ticketEndDate < ticketStartDate) {
+            newErrors.ticketEndDate =
+                "Ticket end date must be after ticket start date";
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0
@@ -81,13 +102,16 @@ function CreateEvents() {
 
     const handleTabChange = (event, newValue) => {
         if (newValue === 1 && !isBasicInfoValid()) {
-            alert("Please Complete Event Basic Information First")
+            dispatch(showSnackbar({
+                message: "Please Complete Event Basic Information first",
+                severity: "warning"
+            }))
             return
         }
         setStep(newValue)
     }
     return (
-        <form>
+        <form onSubmit={(e) => e.preventDefault()}>
             <Stack sx={{ display: "flex", alignItems: "center" }} >
                 <Stack sx={{ maxWidth: { lg: "80%", md: "100%" }, width: "100%" }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -130,6 +154,8 @@ function CreateEvents() {
                                 <EventPackage
                                     packageDetails={packageDetails}
                                     setPackageDetails={setPackageDetails}
+                                    setStep={setStep}
+
                                 />
                             }
                         </Box>

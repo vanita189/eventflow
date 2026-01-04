@@ -7,9 +7,14 @@ import EventLocationPicker from "../../components/EventLocationPicker"
 import Editor from "../../components/Editor"
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import PrimaryButton from '../../components/PrimaryButton';
+import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
+import { useDispatch } from "react-redux";
 
-function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setStep }) {
+function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setStep, errors }) {
+    const dispatch = useDispatch();
+
     return (
+
         <Stack spacing={4} >
             <Stack direction="row" justifyContent="space-evenly" gap={5}>
                 <Stack spacing={3} flex={1} mb={2}>
@@ -61,7 +66,7 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         slotProps={{
                             textField: {
                                 fullWidth: true,
-                                error: !!buildErrorMessage.eventStartDate,
+                                error: !!errors.eventStartDate,
                                 helperText: errors.eventStartDate
                             },
                         }}
@@ -171,9 +176,17 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                 </PrimaryButton>
                 <PrimaryButton sx={{ padding: "12px 50px" }}
                     onClick={() => {
-                        if (validateBasicInfo()) {
-                            setStep(1)
+                        if (!validateBasicInfo()) {
+                            dispatch(
+                                showSnackbar({
+                                    message: "Please fill all the required fields first",
+                                    severity: "warning",
+                                })
+                            );
+                            return;
                         }
+
+                        setStep(1);
                     }}>
                     Next
                 </PrimaryButton>

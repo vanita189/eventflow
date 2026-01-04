@@ -3,6 +3,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import Editor from "../../components/Editor"
 import { useState } from "react";
 import PrimaryButton from "../../components/PrimaryButton";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
+
 
 const ENTRY_TYPES = [
     "Free Entry",
@@ -12,7 +15,9 @@ const ENTRY_TYPES = [
     "Couple Entry"
 ]
 
-function EventPackage({ packageDetails, setPackageDetails }) {
+function EventPackage({ packageDetails, setPackageDetails, setStep }) {
+    const dispatch = useDispatch();
+
     const [entryType, setEntryType] = useState(0);
     const isFreeEntry = entryType === 0;
 
@@ -26,7 +31,7 @@ function EventPackage({ packageDetails, setPackageDetails }) {
 
     const [errors, setErrors] = useState({})
 
-    handleChange = (field) => (e) => {
+    const handleChange = (field) => (e) => {
         setForm({ ...form, [field]: e.target.value })
     }
 
@@ -50,6 +55,7 @@ function EventPackage({ packageDetails, setPackageDetails }) {
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
+    
     return (
         <Stack spacing={4}>
             <Box>
@@ -90,8 +96,15 @@ function EventPackage({ packageDetails, setPackageDetails }) {
                                 fullWidth
                                 type="number"
                                 value={form.price}
-                                onChange={handleChange("price")}
-                                error={!!errors.price}
+                                onChange={(e, val) => {
+                                    setEntryType(val);
+                                    setForm(prev => ({
+                                        ...prev,
+                                        packageName: ENTRY_TYPES[val],
+                                        price: val === 0 ? "" : prev.price
+                                    }));
+                                    setErrors({});
+                                }} error={!!errors.price}
                                 helperText={errors.price}
                                 disabled={isFreeEntry}
                                 placeholder={isFreeEntry ? "Free Entry" : "Enter Amount"}
@@ -133,20 +146,31 @@ function EventPackage({ packageDetails, setPackageDetails }) {
             </Paper>
             <Stack direction="row" justifyContent="space-between">
                 <PrimaryButton
+                    onClick={() => setStep(0)}
+
+                    sx={{ padding: "12px 50px" }}>
+                    Previous
+                </PrimaryButton>
+                <PrimaryButton sx={{ padding: "12px 50px" }}
                     onClick={() => {
-                        if (!validatePackage()) return;
+                        if (!validatePackage()){
+                            dispatch(showSnackbar({
+                                message: "Please fill all required package fields",
+                                severity: "warning",
+                            }));
+                        return;
+                    }
 
                         setPackageDetails(prev => [...prev, {
                             ...form,
                             entryType: ENTRY_TYPES[entryType]
                         }]);
 
-                        alert("Package Added Successfully");
-                    }}
-                    sx={{ padding: "12px 50px" }}>
-                    Previous
-                </PrimaryButton>
-                <PrimaryButton sx={{ padding: "12px 50px" }}>
+                        dispatch(showSnackbar({
+                            message: "Package added successfully",
+                            severity: "success",
+                        }));
+                    }}>
                     Add Entry Package
                 </PrimaryButton>
             </Stack>

@@ -1,9 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import eventsReducer from './events.slice';
+import snackbarReducer from "./snackbar/snackbarSlice";
 
 export const store = configureStore({
     reducer: {
-        events: eventsReducer,
-
-    },
-});
+        snackbar: snackbarReducer,
+    }
+})
