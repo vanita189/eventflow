@@ -34,8 +34,8 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         <Typography fontWeight={600} >Event Image</Typography>
                         <EventImageUpload
                             value={eventDetails.eventImage}
-                            onChange={(image) => {
-                                setEventDetails({ ...eventDetails, eventImage: image })
+                            onChange={(file) => {
+                                setEventDetails({ ...eventDetails, eventImage: file })
                             }}
                         />
                     </Box>

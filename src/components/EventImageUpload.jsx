@@ -9,20 +9,22 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
-function EventImageUpload() {
-    const [image, setImage] = useState(null);
+function EventImageUpload({ onChange, value }) {
+    // const [image, setImage] = useState(null);
     const inputRef = useRef(null);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setImage(URL.createObjectURL(file));
+            onChange(file); // send file to parent
         }
     };
 
+
+
     const handleRemoveImage = (e) => {
         e.stopPropagation();
-        setImage(null);
+        onChange?.(null); // ✅ clear in parent
     };
 
     return (
@@ -41,9 +43,9 @@ function EventImageUpload() {
                 overflow: "hidden",
             }}
         >
-            {image ? (
+            {value ? (
                 <>
-                    <Box
+                    {/* <Box
                         component="img"
                         src={image}
                         alt="event"
@@ -53,6 +55,14 @@ function EventImageUpload() {
                             objectFit: "contain",   // ✅ FULL image visible
                             borderRadius: 2,
                         }}
+                    /> */}
+                    <img
+                        src={URL.createObjectURL(value)}
+                        alt="event"
+                        style={{  width: "100%",
+                            height: "100%",
+                            objectFit: "contain",   // ✅ FULL image visible
+                            borderRadius: 2, }}
                     />
 
                     {/* Remove icon */}

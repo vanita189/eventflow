@@ -1,28 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { FaSearch } from "react-icons/fa";
 
-// Fix default marker icon in Leaflet
+/* Fix default marker icon */
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
   shadowUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-// Component to recenter map on search
+/* Recenter map when value changes */
 const RecenterMap = ({ position }) => {
   const map = useMap();
-  if (position) map.setView(position, 14);
+  useEffect(() => {
+    if (position) map.setView(position, 14);
+  }, [position, map]);
   return null;
 };
 
-// Marker with click-to-select
-const LocationMarker = ({ position, setPosition, setAddress }) => {
+/* Marker + click handler */
+const LocationMarker = ({ position, setPosition, setAddress, onChange }) => {
   useMapEvents({
     click: async (e) => {
       const lat = e.latlng.lat;
@@ -34,9 +37,12 @@ const LocationMarker = ({ position, setPosition, setAddress }) => {
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
         );
         const data = await res.json();
-        setAddress(data.display_name || "Address not found");
+        const address = data.display_name || "Address not found";
+        setAddress(address);
+
+        onChange?.({ lat, lng, address });
       } catch {
-        setAddress("Address not found");
+        onChange?.({ lat, lng, address: "Address not found" });
       }
     },
   });
@@ -44,36 +50,46 @@ const LocationMarker = ({ position, setPosition, setAddress }) => {
   return position ? <Marker position={position} /> : null;
 };
 
-function EventLocationPicker({ onLocationSelect }) {
-  const [position, setPosition] = useState(null); // no default marker
+function EventLocationPicker({ value, onChange }) {
+  const [position, setPosition] = useState(null);
   const [address, setAddress] = useState("");
   const [search, setSearch] = useState("");
+
+  /* Load saved location */
+  useEffect(() => {
+    if (value?.lat && value?.lng) {
+      setPosition([value.lat, value.lng]);
+      setAddress(value.address || "");
+    }
+  }, [value]);
 
   const handleSearch = async () => {
     if (!search) return;
 
     try {
-      // Use Nominatim search API, allows streets, areas, etc.
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(search)}&addressdetails=1&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          search
+        )}&limit=1`
       );
       const data = await res.json();
+
       if (data.length > 0) {
         const lat = parseFloat(data[0].lat);
-        const lon = parseFloat(data[0].lon);
-        setPosition([lat, lon]);
-        setAddress(data[0].display_name);
+        const lng = parseFloat(data[0].lon);
+        const addr = data[0].display_name;
+
+        setPosition([lat, lng]);
+        setAddress(addr);
+
+        onChange?.({ lat, lng, address: addr });
       } else {
-        alert("Location not found. Try a different keyword.");
+        alert("Location not found");
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("Error searching location");
     }
   };
-
-  // Send selected location to parent
-  if (position) onLocationSelect?.({ lat: position[0], lng: position[1], address });
 
   return (
     <div
@@ -81,13 +97,11 @@ function EventLocationPicker({ onLocationSelect }) {
         border: "1px solid #ccc",
         borderRadius: "10px",
         padding: "12px",
-        maxWidth: "500px",
-        // margin: "auto",
         backgroundColor: "#fafafa",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
       }}
     >
-      {/* Search box */}
+      {/* Search */}
       <div style={{ display: "flex", marginBottom: "12px", position: "relative" }}>
         <FaSearch
           style={{
@@ -103,20 +117,20 @@ function EventLocationPicker({ onLocationSelect }) {
           placeholder="Search area, street, or location..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           style={{
             flex: 1,
-            padding: "6px 10px 6px 30px", // padding-left for icon
+            padding: "6px 10px 6px 30px",
             borderRadius: "6px",
             border: "1px solid #ccc",
             outline: "none",
           }}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button
           onClick={handleSearch}
           style={{
             padding: "6px 12px",
-            marginLeft: "5px",
+            marginLeft: "6px",
             border: "none",
             borderRadius: "6px",
             backgroundColor: "#4f46e5",
@@ -129,28 +143,26 @@ function EventLocationPicker({ onLocationSelect }) {
       </div>
 
       {/* Map */}
-      <div style={{ overflowX: "hidden", borderRadius: "8px", border: "1px solid #ddd" }}>
-        <MapContainer
-          center={[20, 78]}
-          zoom={5}
-          style={{ height: "250px", width: "100%", borderRadius: "8px" }}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <RecenterMap position={position} />
-          <LocationMarker
-            position={position}
-            setPosition={setPosition}
-            setAddress={setAddress}
-          />
-        </MapContainer>
-      </div>
+      <MapContainer
+        center={[20, 78]}
+        zoom={5}
+        style={{ height: "250px", width: "100%", borderRadius: "8px" }}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <RecenterMap position={position} />
+        <LocationMarker
+          position={position}
+          setPosition={setPosition}
+          setAddress={setAddress}
+          onChange={onChange}
+        />
+      </MapContainer>
 
-      {/* Selected address */}
+      {/* Address */}
       {address && (
         <div
           style={{
             marginTop: "10px",
-            fontWeight: 500,
             padding: "6px 10px",
             backgroundColor: "#eef2ff",
             borderRadius: "6px",
@@ -159,7 +171,7 @@ function EventLocationPicker({ onLocationSelect }) {
             fontSize: "14px",
           }}
         >
-          📍 Selected Address: {address}
+          📍 {address}
         </div>
       )}
     </div>

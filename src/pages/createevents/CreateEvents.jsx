@@ -2,7 +2,7 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import EventIcon from "@mui/icons-material/Event";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import PrimaryButton from "../../components/PrimaryButton"
 import Tab from "@mui/material/Tab";
@@ -33,14 +33,14 @@ function CreateEvents() {
     const isBasicInfoValid = () => {
         return (
             eventDetails.eventName &&
-            // eventDetails.eventImage &&
-            // eventDetails.eventLocation &&
-            // eventDetails.eventStartDate &&
-            // eventDetails.eventEndDate &&
-            // eventDetails.ticketStartDate &&
-            // eventDetails.ticketEndDate &&
-            // eventDetails.eventCapacity &&
-            // eventDetails.eventTags &&
+            eventDetails.eventImage &&
+            eventDetails.eventLocation &&
+            eventDetails.eventStartDate &&
+            eventDetails.eventEndDate &&
+            eventDetails.ticketStartDate &&
+            eventDetails.ticketEndDate &&
+            eventDetails.eventCapacity &&
+            eventDetails.eventTags &&
             eventDetails.eventDescription
         )
     }
@@ -57,18 +57,18 @@ function CreateEvents() {
         } = eventDetails
 
         if (!eventDetails.eventName) newErrors.eventName = "Event name is required";
-        // if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
-        // if (!eventDetails.eventImage)
-        //     newErrors.eventImage = "Event image is required";
+        if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
+        if (!eventDetails.eventImage)
+            newErrors.eventImage = "Event image is required";
 
-        // if (!eventDetails.eventLocation)
-        //     newErrors.eventLocation = "Event location is required";
+        if (!eventDetails.eventLocation)
+            newErrors.eventLocation = "Event location is required";
 
-        // if (!eventDetails.eventCapacity)
-        //     newErrors.eventCapacity = "Event capacity is required";
+        if (!eventDetails.eventCapacity)
+            newErrors.eventCapacity = "Event capacity is required";
 
-        // if (!eventDetails.eventTags)
-        //     newErrors.eventTags = "Event tags are required";
+        if (!eventDetails.eventTags)
+            newErrors.eventTags = "Event tags are required";
 
         if (!eventDetails.eventDescription)
             newErrors.eventDescription = "Event description is required";
@@ -110,6 +110,11 @@ function CreateEvents() {
         }
         setStep(newValue)
     }
+    
+useEffect(() => {
+    console.log("Event Details Updated 👉", eventDetails);
+}, [eventDetails]);
+
     return (
         <form onSubmit={(e) => e.preventDefault()}>
             <Stack sx={{ display: "flex", alignItems: "center" }} >
