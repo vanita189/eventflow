@@ -1,266 +1,253 @@
-// import Box from "@mui/material/Box";
-// import Typography from "@mui/material/Typography";
-// import Button from "@mui/material/Button";
-// import Paper from "@mui/material/Paper";
-// import EventBasicInfo from "./EventBasicInfo";
-// import EventPackage from "./EventPackage";
-// import { useState } from "react";
-// import Tabs from "@mui/material/Tabs";
-// import Tab from "@mui/material/Tab";
 
-// function CreateEvents() {
-//     const [step, setStep] = useState(1);
-//     const [basicInfo, setBasicInfo] = useState({
-//         eventName: "",
-//         image: null,
-//         // location: null,
-//         startDate: null,
-//         endDate: null,
-//         capacity: "",
-//         tags: "",
-//         description: "",
-//     })
+import {
+  Paper,
+  Stack,
+  Typography,
+  Box,
+  TextField,
+  MenuItem,
+  Divider,
+} from "@mui/material";
+import Editor from "../../components/Editor";
+import { useState } from "react";
+import PrimaryButton from "../../components/PrimaryButton";
 
+const ENTRY_TYPES = [
+  "Free Entry",
+  "Cover Entry",
+  "Ladies Entry",
+  "Stag Entry",
+  "Couple Entry",
+];
 
-//   const [basicInfoErrors, setBasicInfoErrors] = useState({});
-//   const [basicInfoCompleted, setBasicInfoCompleted] = useState(false);
+const EMPTY_FORM = {
+  id: null,
+  packageName: "",
+  price: "",
+  allowedPersons: "",
+  quantity: "",
+  description: "",
+};
 
-//   const validateBasicInfo = () => {
-//     const errors = {};
+function EventPackage({ setStep }) {
+  const [draftForm, setDraftForm] = useState(EMPTY_FORM);
+  const [packages, setPackages] = useState([]);
+  const [editingId, setEditingId] = useState(null);
 
-//     if (!basicInfo.eventName) errors.eventName = "Event name is required";
-//     if (!basicInfo.image) errors.image = "Event image is required";
-//     // if (!basicInfo.location) errors.location = "Location is required";
-//     if (!basicInfo.startDate) errors.startDate = "Start date is required";
-//     if (!basicInfo.endDate) errors.endDate = "End date is required";
-//     if (!basicInfo.capacity) errors.capacity = "Capacity is required";
+  const isFreeEntry = draftForm.packageName === "Free Entry";
 
-//     setBasicInfoErrors(errors);
-//     return Object.keys(errors).length === 0;
-//   };
+  const usedPackageNames = packages.map((pkg) => pkg.packageName);
 
-//   const handleBasicInfoNext = () => {
-//     if (validateBasicInfo()) {
-//       setBasicInfoCompleted(true);
-//       setStep(1);
-//     }
-//   };
-//     return (
-//         <Box display="flex" justifyContent="center">
-//             {/* Shared width container */}
-//             <Box sx={{ width: { md: "80%", xs: "100%" } }}>
-//                 <Box display="flex" justifyContent="space-between" mb={1}>
-//                     <Typography>Create Event</Typography>
-//                     <Button>Event Name</Button>
-//                 </Box>
+  /* Select package (NEW or EDIT if exists) */
+  const handleSelectPackage = (e) => {
+    const selected = e.target.value;
 
-//                 <Paper
-//                     elevation={2}
-//                     sx={{
-//                         width: "100%",     // ⬅️ takes same width as header
-//                         borderRadius: 2,
-//                     }}
-//                 >
-//                     {/* Tabs */}
-//                     <Box p={2} sx={{ border: 1, borderColor: "divider" }}>
-//                         <Tabs
-//                             variant="fullWidth"
-//                             sx={{
-//                                 borderBottom: 1.5,
-//                                 borderColor: "divider",
-//                                 justifyContent: "center",
-//                                 display: "flex",
-//                                 "& .MuiTab-root:focus": {
-//                                     outline: "none",
-//                                 },
+    const existingPackage = packages.find(
+      (pkg) => pkg.packageName === selected
+    );
 
-//                             }}
-//                             value={step}
-//                             onChange={(_, value) => setStep(value)}
-//                         >
-//                             <Tab label="Basic Information" />
-//                             <Tab
-//                                 label="Packages"
-//                                 disabled={!basicInfoCompleted}
-//                             />
-//                         </Tabs>
+    if (existingPackage) {
+      // Edit existing package
+      setDraftForm(existingPackage);
+      setEditingId(existingPackage.id);
+    } else {
+      // New package
+      setDraftForm({
+        ...EMPTY_FORM,
+        id: crypto.randomUUID(),
+        packageName: selected,
+      });
+      setEditingId(null);
+    }
+  };
 
-//                         <Box p={2}>
-//                             {step === 0 && (
-//                                 <EventBasicInfo
-//                                     values={basicInfo}
-//                                     setValues={setBasicInfo}
-//                                     errors={basicInfoErrors}
-//                                     onNext={handleBasicInfoNext}
-//                                 />
-//                             )}
+  /* Change fields */
+  const handleChange = (field) => (e) => {
+    setDraftForm({ ...draftForm, [field]: e.target.value });
+  };
 
-//                             {step === 1 && <EventPackage />}
-//                         </Box>
-//                     </Box>
-//                 </Paper>
-//             </Box>
-//         </Box>
-//     );
-// }
+  /* Add / Update package */
+  const handleAddPackage = () => {
+    if (
+      !draftForm.packageName ||
+      !draftForm.allowedPersons ||
+      !draftForm.quantity
+    ) {
+      alert("Please fill required fields");
+      return;
+    }
 
-// export default CreateEvents;
+    if (editingId) {
+      setPackages((prev) =>
+        prev.map((pkg) =>
+          pkg.id === editingId ? draftForm : pkg
+        )
+      );
+    } else {
+      setPackages((prev) => [draftForm, ...prev]);
+    }
 
-// import { useState } from "react";
-// import { Stack, TextField, Typography, Box } from "@mui/material";
-// import PrimaryButton from "../../components/PrimaryButton";
-// import EventImageUpload from "../../components/EventImageUpload";
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-// import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-// import dayjs from 'dayjs';
-// import EventLocationPicker from "../../components/EventLocationPicker";
-// import Editor from "../../components/Editor"
+    setDraftForm(EMPTY_FORM);
+    setEditingId(null);
+  };
 
-// function EventBasicInfo({ values, setValues, errors, onNext }) {
+  /* Edit package */
+  const handleEdit = (pkg) => {
+    setDraftForm(pkg);
+    setEditingId(pkg.id);
+  };
 
+  /* Remove package */
+  const handleRemove = (id) => {
+    setPackages((prev) => prev.filter((pkg) => pkg.id !== id));
+  };
 
-//     return (
-//         <Stack
-//             spacing={2}
-//             width="100%"
-//             sx={{ overflowX: "hidden" }} // corrected
-//         >
-//             <Stack flexDirection={{ xs: "column", md: "row" }} spacing={2} gap={5} width="100%">
-//                 <Stack spacing={2} flex={1} minWidth={0}>
-//                     {/* Event Name */}
-//                     <Stack spacing={1} width="100%">
-//                         <Typography fontWeight={700}>Event Name</Typography>
-//                         <TextField
-//                             placeholder="Event Name"
-//                             name="eventName"
-//                             required
-//                             fullWidth
-//                             value={values.eventName}
-//                             onChange={(e) =>
-//                                 setValues({ ...values, eventName: e.target.value })
-//                             }
-//                             error={!!errors.eventName}
-//                         />
-//                     </Stack>
+  /* Submit all packages */
+  const handleSubmitAll = () => {
+    console.log("FINAL PAYLOAD 👉", packages);
+    alert("All packages submitted!");
+  };
 
-//                     {/* Upload Image */}
-//                     <Stack spacing={1} width="100%">
-//                         <Typography fontWeight={700}>Upload Image</Typography>
-//                         <Box>
-//                             <EventImageUpload
-//                                 value={values.image}   // ✅ pass file
+  return (
+    <Stack spacing={4} >
+      {/* HEADER */}
+      <Box>
+        <Typography variant="h6" fontWeight={700}>
+          Add Entry Packages
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Add packages one by one. Each package type can be added only once.
+        </Typography>
+      </Box>
 
-//                                 error={errors.image}
-//                                 onChange={(img) => setValues({ ...values, image: img })}
-//                             />
-//                             {errors.image && (
-//                                 <Typography color="error">{errors.image}</Typography>
-//                             )}
-//                         </Box>
-//                     </Stack>
-//                 </Stack>
+      {/* PACKAGE SELECT */}
+      <Box>
+        <TextField
+          select
+          fullWidth
+          value={draftForm.packageName}
+          onChange={handleSelectPackage}
+          SelectProps={{ displayEmpty: true }}
+        >
+          <MenuItem value="" disabled>
+            Select an entry package
+          </MenuItem>
 
-//                 {/* Event Location */}
-//                 <Stack spacing={1} flex={1} minWidth={0}>
-//                     <Typography fontWeight={700}>Event Location</Typography>
-//                     {/* <EventLocationPicker
-//                         onLocationSelect={(loc) =>
-//                             setValues({ ...values, location: loc })
-//                         }
-//                     />
-//                     {errors.location && (
-//                         <Typography color="error">{errors.location}</Typography>
-//                     )} */}
-//                 </Stack>
-//             </Stack>
+          {ENTRY_TYPES.map((type) => (
+            <MenuItem
+              key={type}
+              value={type}
+              disabled={usedPackageNames.includes(type)}
+            >
+              {type}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
 
-//             {/* Start & End Date */}
-//             <LocalizationProvider dateAdapter={AdapterDayjs}>
-//                 <Stack
-//                     direction={{ xs: "column", md: "row" }}
-//                     spacing={2}
-//                     gap={5}
-//                     width="100%"
-//                 >
-//                     <Stack spacing={1} flex={1} minWidth={0}>
-//                         <Typography fontWeight={700}>Start Date & Time</Typography>
-//                         <DateTimePicker
-//                             value={values.startDate}
-//                             onChange={(val) =>
-//                                 setValues({ ...values, startDate: val })
-//                             }
-//                             renderInput={(props) => <TextField {...props} fullWidth />}
-//                         />
-//                     </Stack>
+      {/* FORM */}
+      {draftForm.packageName && (
+        <Paper sx={{ p:3, borderRadius: 2 }}>
+          <Stack spacing={3}>
+            <Typography fontWeight={700}>
+              {editingId ? "Edit Package" : "New Package"} –{" "}
+              {draftForm.packageName}
+            </Typography>
 
-//                     <Stack spacing={1} flex={1} minWidth={0}>
-//                         <Typography fontWeight={700}>End Date & Time</Typography>
-//                         <DateTimePicker
-//                             value={values.endDate}
-//                             onChange={(val) =>
-//                                 setValues({ ...values, endDate: val })
-//                             }
-//                             renderInput={(props) => <TextField {...props} fullWidth />}
-//                         />
-//                     </Stack>
-//                 </Stack>
-//             </LocalizationProvider>
+            <TextField
+              label="Price"
+              type="number"
+              disabled={isFreeEntry}
+              value={draftForm.price}
+              onChange={handleChange("price")}
+              placeholder={isFreeEntry ? "Free Entry" : ""}
+            />
 
-//             {/* Capacity & Tags */}
-//             <Stack
-//                 direction={{ xs: "column", md: "row" }}
-//                 spacing={2}
-//                 gap={5}
-//                 width="100%"
-//             >
-//                 <Stack spacing={1} flex={1} minWidth={0}>
-//                     <Typography fontWeight={700}>Total Capacity</Typography>
-//                     <TextField
-//                         type="number"
-//                         name="capacity"
-//                         fullWidth
-//                         value={values.capacity}
-//                         onChange={(e) =>
-//                             setValues({ ...values, capacity: e.target.value })
-//                         }
-//                         error={!!errors.capacity}
-//                     />
-//                 </Stack>
+            <Stack direction="row" spacing={2}>
+              <TextField
+                fullWidth
+                label="Allowed Persons"
+                type="number"
+                value={draftForm.allowedPersons}
+                onChange={handleChange("allowedPersons")}
+              />
+              <TextField
+                fullWidth
+                label="Quantity"
+                type="number"
+                value={draftForm.quantity}
+                onChange={handleChange("quantity")}
+              />
+            </Stack>
 
-//                 <Stack spacing={1} flex={1} minWidth={0}>
-//                     <Typography fontWeight={700}>Event Tags (comma separated)</Typography>
-//                     <TextField
-//                         name="tags"
-//                         fullWidth
-//                         value={values.tags}
-//                         onChange={(e) =>
-//                             setValues({ ...values, tags: e.target.value })
-//                         }
-//                     />
-//                 </Stack>
-//             </Stack>
-//             <Stack>
-//                 <Editor
-//                     value={values.description}
-//                     onChange={(val) =>
-//                         setValues({ ...values, description: val })
-//                     }
-//                 />
-//             </Stack>
+            <Editor
+              value={draftForm.description}
+              onChange={(v) =>
+                setDraftForm({ ...draftForm, description: v })
+              }
+            />
 
-//             {/* Buttons */}
-//             <Stack
-//                 direction="row"
-//                 justifyContent="space-between"
-//                 mt={3}
-//                 width="100%"
-//             >
-//                 <PrimaryButton>Cancel</PrimaryButton>
-//                 <PrimaryButton onClick={onNext} > Next</PrimaryButton>
-//             </Stack>
-//         </Stack>
-//     );
-// }
+            <PrimaryButton onClick={handleAddPackage}>
+              {editingId ? "Update Package" : "Add Package"}
+            </PrimaryButton>
+          </Stack>
+        </Paper>
+      )}
 
-// export default EventBasicInfo;
+      {/* ADDED PACKAGES LIST */}
+      {packages.length > 0 && (
+        <Stack spacing={2}>
+          <Typography fontWeight={700}>Added Packages</Typography>
+
+          {packages.map((pkg) => (
+            <Paper key={pkg.id} sx={{ p: 2 }}>
+              <Stack spacing={1}>
+                <Typography fontWeight={600}>
+                  {pkg.packageName}
+                </Typography>
+
+                <Typography variant="body2">
+                  Price:{" "}
+                  {pkg.packageName === "Free Entry"
+                    ? "Free"
+                    : `₹${pkg.price}`}
+                </Typography>
+
+                <Typography variant="body2">
+                  Persons: {pkg.allowedPersons} | Qty: {pkg.quantity}
+                </Typography>
+
+                <Stack direction="row" spacing={2}>
+                  <PrimaryButton onClick={() => handleEdit(pkg)}>
+                    Edit
+                  </PrimaryButton>
+                  <PrimaryButton onClick={() => handleRemove(pkg.id)}>
+                    Remove
+                  </PrimaryButton>
+                </Stack>
+              </Stack>
+            </Paper>
+          ))}
+        </Stack>
+      )}
+
+      <Divider />
+
+      {/* FOOTER */}
+      <Stack direction="row" justifyContent="space-between">
+        <PrimaryButton onClick={() => setStep(0)}>
+          Previous
+        </PrimaryButton>
+
+        <PrimaryButton
+          disabled={packages.length === 0}
+          onClick={handleSubmitAll}
+        >
+          Submit Event
+        </PrimaryButton>
+      </Stack>
+    </Stack>
+  );
+}
+
+export default EventPackage;

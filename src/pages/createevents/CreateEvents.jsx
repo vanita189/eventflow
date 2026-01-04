@@ -15,7 +15,7 @@ import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 
 function CreateEvents() {
     const dispatch = useDispatch();
-    const [step, setStep] = useState(0)
+    const [step, setStep] = useState(1)
     const [eventDetails, setEventDetails] = useState({
         eventName: "",
         eventImage: null,
