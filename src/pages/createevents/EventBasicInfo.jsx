@@ -22,7 +22,7 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                             )}
                             placeholder="Enter Event Name"
                             fullWidth
-                            
+
                         />
                     </Box>
                     <Box height={280}>
@@ -61,6 +61,8 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         slotProps={{
                             textField: {
                                 fullWidth: true,
+                                error: !!buildErrorMessage.eventStartDate,
+                                helperText: errors.eventStartDate
                             },
                         }}
                     />
@@ -76,6 +78,8 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         slotProps={{
                             textField: {
                                 fullWidth: true,
+                                error: !!errors.eventEndDate,
+                                helperText: errors.eventEndDate
                             },
                         }}
                     />
@@ -95,6 +99,9 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         slotProps={{
                             textField: {
                                 fullWidth: true,
+                                error: !!errors.ticketStartDate,
+                                helperText: errors.ticketStartDate
+
                             },
                         }}
                     />
@@ -110,6 +117,9 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         slotProps={{
                             textField: {
                                 fullWidth: true,
+                                error: !!errors.ticketEndDate,
+                                helperText: errors.ticketEndDate
+
                             },
                         }}
                     />
@@ -128,7 +138,7 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         })}
                         placeholder="Enter Event Name"
                         fullWidth
-                        
+
                     />
                 </Box>
                 <Box flex={1}>
@@ -138,7 +148,7 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         onChange={(e) => setEventDetails({ ...eventDetails, eventTags: e.target.value })}
                         placeholder="Enter Event Name"
                         fullWidth
-                         />
+                    />
                 </Box>
             </Stack>
 

@@ -27,7 +27,7 @@ function EventPackage({ packageDetails, setPackageDetails }) {
     const [errors, setErrors] = useState({})
 
     handleChange = (field) => (e) => {
-        setForm({ ...form, field: e.target.value })
+        setForm({ ...form, [field]: e.target.value })
     }
 
     const validatePackage = () => {

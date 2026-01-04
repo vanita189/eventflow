@@ -48,8 +48,32 @@ function CreateEvents() {
     const validateBasicInfo = () => {
         const newErrors = {}
 
+        const{
+            eventStartDate,
+            eventEndDate,
+            ticketStartDate,
+            ticketEndDate
+        } = eventDetails
+
         if (!eventDetails.eventName) newErrors.eventName = "Event name is required";
         if (!eventDetails.eventImage) newErrors.eventImage = "Event image is required";
+
+        //date validations
+        if(eventStartDate && eventEndDate && eventEndDate < eventStartDate){
+            newErrors.eventEndDate = "End date must be after start date"
+        }
+
+        if(ticketStartDate && eventStartDate && ticketStartDate > eventStartDate){
+            newErrors.ticketStartDate = "Ticket start date must be before event start date"
+        }
+
+        if(ticketEndDate && eventEndDate && ticketEndDate < eventEndDate){
+            newErrors.ticketEndDate = "Ticket end date must be before event end date"
+        }
+
+        if(ticketStartDate && ticketEndDate && ticketEndDate < ticketStartDate){[
+            newErrors.ticketEndDate = "Ticket end date must be after ticket start date"
+        ]}
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0
@@ -99,6 +123,7 @@ function CreateEvents() {
                                     setEventDetails={setEventDetails}
                                     setStep={setStep}
                                     validateBasicInfo={validateBasicInfo}
+                                    errors={errors}
                                 />
                             }
                             {step === 1 &&
