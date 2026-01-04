@@ -101,19 +101,23 @@ function CreateEvents() {
     }
 
     const handleTabChange = (event, newValue) => {
-        if (newValue === 1 && !isBasicInfoValid()) {
-            dispatch(showSnackbar({
-                message: "Please Complete Event Basic Information first",
-                severity: "warning"
-            }))
-            return
-        }
+        // if (newValue === 1 && !isBasicInfoValid()) {
+        //     dispatch(showSnackbar({
+        //         message: "Please Complete Event Basic Information first",
+        //         severity: "warning"
+        //     }))
+        //     return
+        // }
         setStep(newValue)
     }
     
 useEffect(() => {
     console.log("Event Details Updated 👉", eventDetails);
 }, [eventDetails]);
+
+useEffect(() => {
+    console.log("package Details Updated 👉", packageDetails);
+}, [packageDetails]);
 
     return (
         <form onSubmit={(e) => e.preventDefault()}>
