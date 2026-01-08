@@ -1,255 +1,270 @@
 
-import {
-  Paper,
-  Stack,
-  Typography,
-  Box,
-  TextField,
-  MenuItem,
-  Divider,
-} from "@mui/material";
-import Editor from "../../components/Editor";
-import { useState } from "react";
-import PrimaryButton from "../../components/PrimaryButton";
 
-const ENTRY_TYPES = [
-  "Free Entry",
-  "Cover Entry",
-  "Ladies Entry",
-  "Stag Entry",
-  "Couple Entry",
-];
 
-const EMPTY_FORM = {
-  id: null,
-  packageName: "",
-  price: "",
-  allowedPersons: "",
-  quantity: "",
-  description: "",
-};
 
-function EventPackage({ setStep }) {
-  const [draftForm, setDraftForm] = useState(EMPTY_FORM);
-  const [packages, setPackages] = useState([]);
-  const [editingId, setEditingId] = useState(null);
 
-  const isFreeEntry = draftForm.packageName === "Free Entry";
+ import {
+   Paper,
+   Stack,
+   Typography,
+   Box,
+   TextField,
+   MenuItem,
+   Divider,
+ } from "@mui/material";
+ import Editor from "../../components/Editor";
+ import { useState } from "react";
+ import PrimaryButton from "../../components/PrimaryButton";
 
-  const usedPackageNames = packages.map((pkg) => pkg.packageName);
+ const ENTRY_TYPES = [
+   "Free Entry",
+   "Cover Entry",
+   "Ladies Entry",
+   "Stag Entry",
+   "Couple Entry",
+ ];
 
-  /* Select package (NEW or EDIT if exists) */
-  const handleSelectPackage = (e) => {
-    const selected = e.target.value;
+ const EMPTY_FORM = {
+   id: null,
+   packageName: "",
+   price: "",
+   allowedPersons: "",
+   quantity: "",
+   description: "",
+ };
 
-    const existingPackage = packages.find(
-      (pkg) => pkg.packageName === selected
-    );
+ function EventPackage({
+   packageDetails,
+   setPackageDetails,
+   setStep,
+   onSubmit,
+ }) {
+   const [draftForm, setDraftForm] = useState(EMPTY_FORM);
+   const [editingId, setEditingId] = useState(null);
 
-    if (existingPackage) {
-      // Edit existing package
-      setDraftForm(existingPackage);
-      setEditingId(existingPackage.id);
-    } else {
-      // New package
-      setDraftForm({
-        ...EMPTY_FORM,
-        id: crypto.randomUUID(),
-        packageName: selected,
-      });
-      setEditingId(null);
-    }
-  };
+   const isFreeEntry = draftForm.packageName === "Free Entry";
 
-  /* Change fields */
-  const handleChange = (field) => (e) => {
-    setDraftForm({ ...draftForm, [field]: e.target.value });
-  };
+   const usedPackageNames = packageDetails.map(
+     (pkg) => pkg.packageName
+   );
 
-  /* Add / Update package */
-  const handleAddPackage = () => {
-    if (
-      !draftForm.packageName ||
-      !draftForm.allowedPersons ||
-      !draftForm.quantity
-    ) {
-      alert("Please fill required fields");
-      return;
-    }
+   /* Select package (NEW or EDIT if exists) */
+   const handleSelectPackage = (e) => {
+     const selected = e.target.value;
 
-    if (editingId) {
-      setPackages((prev) =>
-        prev.map((pkg) =>
-          pkg.id === editingId ? draftForm : pkg
-        )
-      );
-    } else {
-      setPackages((prev) => [draftForm, ...prev]);
-    }
+     const existingPackage = packageDetails.find(
+       (pkg) => pkg.packageName === selected
+     );
 
-    setDraftForm(EMPTY_FORM);
-    setEditingId(null);
-  };
+     if (existingPackage) {
+       setDraftForm(existingPackage);
+       setEditingId(existingPackage.id);
+     } else {
+       setDraftForm({
+         ...EMPTY_FORM,
+         id: crypto.randomUUID(),
+         packageName: selected,
+       });
+       setEditingId(null);
+     }
+   };
 
-  /* Edit package */
-  const handleEdit = (pkg) => {
-    setDraftForm(pkg);
-    setEditingId(pkg.id);
-  };
+   /* Change fields */
+   const handleChange = (field) => (e) => {
+     setDraftForm({ ...draftForm, [field]: e.target.value });
+   };
 
-  /* Remove package */
-  const handleRemove = (id) => {
-    setPackages((prev) => prev.filter((pkg) => pkg.id !== id));
-  };
+   /* Add / Update package */
+   const handleAddPackage = () => {
+     if (
+       !draftForm.packageName ||
+       !draftForm.allowedPersons ||
+       !draftForm.quantity
+     ) {
+       alert("Please fill required fields");
+       return;
+     }
 
-  /* Submit all packages */
-  const handleSubmitAll = () => {
-    console.log("FINAL PAYLOAD 👉", packages);
-    alert("All packages submitted!");
-    setPackageDetails(packages)
+     if (editingId) {
+       setPackageDetails((prev) =>
+         prev.map((pkg) =>
+           pkg.id === editingId ? draftForm : pkg
+         )
+       );
+     } else {
+       setPackageDetails((prev) => [
+         draftForm,
+         ...prev,
+       ]);
+     }
 
-  };
+     setDraftForm(EMPTY_FORM);
+     setEditingId(null);
+   };
 
-  return (
-    <Stack spacing={4} >
-      {/* HEADER */}
-      <Box>
-        <Typography variant="h6" fontWeight={700}>
-          Add Entry Packages
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Add packages one by one. Each package type can be added only once.
-        </Typography>
-      </Box>
+   /* Edit package */
+   const handleEdit = (pkg) => {
+     setDraftForm(pkg);
+     setEditingId(pkg.id);
+   };
 
-      {/* PACKAGE SELECT */}
-      <Box>
-        <TextField
-          select
-          fullWidth
-          value={draftForm.packageName}
-          onChange={handleSelectPackage}
-          SelectProps={{ displayEmpty: true }}
-        >
-          <MenuItem value="" disabled>
-            Select an entry package
-          </MenuItem>
+   /* Remove package */
+   const handleRemove = (id) => {
+     setPackageDetails((prev) =>
+       prev.filter((pkg) => pkg.id !== id)
+     );
+   };
 
-          {ENTRY_TYPES.map((type) => (
-            <MenuItem
-              key={type}
-              value={type}
-              disabled={usedPackageNames.includes(type)}
-            >
-              {type}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Box>
+   return (
+     <Stack spacing={4}>
+       {/* HEADER */}
+       <Box>
+         <Typography variant="h6" fontWeight={700}>
+           Add Entry Packages
+         </Typography>
+         <Typography variant="body2" color="text.secondary">
+           Add packages one by one. Each package type can be added only once.
+         </Typography>
+       </Box>
 
-      {/* FORM */}
-      {draftForm.packageName && (
-        <Paper sx={{ p:3, borderRadius: 2 }}>
-          <Stack spacing={3}>
-            <Typography fontWeight={700}>
-              {editingId ? "Edit Package" : "New Package"} –{" "}
-              {draftForm.packageName}
-            </Typography>
+       {/* PACKAGE SELECT */}
+       <Box>
+         <TextField
+           select
+           fullWidth
+           value={draftForm.packageName}
+           onChange={handleSelectPackage}
+           SelectProps={{ displayEmpty: true }}
+         >
+           <MenuItem value="" disabled>
+             Select an entry package
+           </MenuItem>
 
-            <TextField
-              label="Price"
-              type="number"
-              disabled={isFreeEntry}
-              value={draftForm.price}
-              onChange={handleChange("price")}
-              placeholder={isFreeEntry ? "Free Entry" : ""}
-            />
+           {ENTRY_TYPES.map((type) => (
+             <MenuItem
+               key={type}
+               value={type}
+               disabled={usedPackageNames.includes(type)}
+             >
+               {type}
+             </MenuItem>
+           ))}
+         </TextField>
+       </Box>
 
-            <Stack direction="row" spacing={2}>
-              <TextField
-                fullWidth
-                label="Allowed Persons"
-                type="number"
-                value={draftForm.allowedPersons}
-                onChange={handleChange("allowedPersons")}
-              />
-              <TextField
-                fullWidth
-                label="Quantity"
-                type="number"
-                value={draftForm.quantity}
-                onChange={handleChange("quantity")}
-              />
-            </Stack>
+       {/* FORM */}
+       {draftForm.packageName && (
+         <Paper sx={{ p: 3, borderRadius: 2 }}>
+           <Stack spacing={3}>
+             <Typography fontWeight={700}>
+               {editingId ? "Edit Package" : "New Package"} –{" "}
+               {draftForm.packageName}
+             </Typography>
 
-            <Editor
-              value={draftForm.description}
-              onChange={(v) =>
-                setDraftForm({ ...draftForm, description: v })
-              }
-            />
+             <TextField
+               label="Price"
+               type="number"
+               disabled={isFreeEntry}
+               value={draftForm.price}
+               onChange={handleChange("price")}
+               placeholder={isFreeEntry ? "Free Entry" : ""}
+             />
 
-            <PrimaryButton onClick={handleAddPackage}>
-              {editingId ? "Update Package" : "Add Package"}
-            </PrimaryButton>
-          </Stack>
-        </Paper>
-      )}
+             <Stack direction="row" spacing={2}>
+               <TextField
+                 fullWidth
+                 label="Allowed Persons"
+                 type="number"
+                 value={draftForm.allowedPersons}
+                 onChange={handleChange("allowedPersons")}
+               />
+               <TextField
+                 fullWidth
+                 label="Quantity"
+                 type="number"
+                 value={draftForm.quantity}
+                 onChange={handleChange("quantity")}
+               />
+             </Stack>
 
-      {/* ADDED PACKAGES LIST */}
-      {packages.length > 0 && (
-        <Stack spacing={2}>
-          <Typography fontWeight={700}>Added Packages</Typography>
+             <Editor
+               value={draftForm.description}
+               onChange={(v) =>
+                 setDraftForm({
+                   ...draftForm,
+                   description: v,
+                 })
+               }
+             />
 
-          {packages.map((pkg) => (
-            <Paper key={pkg.id} sx={{ p: 2 }}>
-              <Stack spacing={1}>
-                <Typography fontWeight={600}>
-                  {pkg.packageName}
-                </Typography>
+             <PrimaryButton onClick={handleAddPackage}>
+               {editingId ? "Update Package" : "Add Package"}
+             </PrimaryButton>
+           </Stack>
+         </Paper>
+       )}
 
-                <Typography variant="body2">
-                  Price:{" "}
-                  {pkg.packageName === "Free Entry"
-                    ? "Free"
-                    : `₹${pkg.price}`}
-                </Typography>
+       {/* ADDED PACKAGES LIST */}
+       {packageDetails.length > 0 && (
+         <Stack spacing={2}>
+           <Typography fontWeight={700}>
+             Added Packages
+           </Typography>
 
-                <Typography variant="body2">
-                  Persons: {pkg.allowedPersons} | Qty: {pkg.quantity}
-                </Typography>
+           {packageDetails.map((pkg) => (
+             <Paper key={pkg.id} sx={{ p: 2 }}>
+               <Stack spacing={1}>
+                 <Typography fontWeight={600}>
+                   {pkg.packageName}
+                 </Typography>
 
-                <Stack direction="row" spacing={2}>
-                  <PrimaryButton onClick={() => handleEdit(pkg)}>
-                    Edit
-                  </PrimaryButton>
-                  <PrimaryButton onClick={() => handleRemove(pkg.id)}>
-                    Remove
-                  </PrimaryButton>
-                </Stack>
-              </Stack>
-            </Paper>
-          ))}
-        </Stack>
-      )}
+                 <Typography variant="body2">
+                   Price:{" "}
+                   {pkg.packageName === "Free Entry"
+                     ? "Free"
+                     : `₹${pkg.price}`}
+                 </Typography>
 
-      <Divider />
+                 <Typography variant="body2">
+                   Persons: {pkg.allowedPersons} | Qty:{" "}
+                   {pkg.quantity}
+                 </Typography>
 
-      {/* FOOTER */}
-      <Stack direction="row" justifyContent="space-between">
-        <PrimaryButton onClick={() => setStep(0)}>
-          Previous
-        </PrimaryButton>
+                 <Stack direction="row" spacing={2}>
+                   <PrimaryButton
+                     onClick={() => handleEdit(pkg)}
+                   >
+                     Edit
+                   </PrimaryButton>
+                   <PrimaryButton
+                     onClick={() => handleRemove(pkg.id)}
+                   >
+                     Remove
+                   </PrimaryButton>
+                 </Stack>
+               </Stack>
+             </Paper>
+           ))}
+         </Stack>
+       )}
 
-        <PrimaryButton
-          disabled={packages.length === 0}
-          onClick={handleSubmitAll}
-        >
-          Submit Event
-        </PrimaryButton>
-      </Stack>
-    </Stack>
-  );
-}
+       <Divider />
 
-export default EventPackage;
+       {/* FOOTER */}
+       <Stack direction="row" justifyContent="space-between">
+         <PrimaryButton onClick={() => setStep(0)}>
+           Previous
+         </PrimaryButton>
+
+         <PrimaryButton
+           disabled={packageDetails.length === 0}
+           onClick={onSubmit}
+         >
+           Submit Event
+         </PrimaryButton>
+       </Stack>
+     </Stack>
+   );
+ }
+
+ export default EventPackage;

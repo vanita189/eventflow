@@ -11,11 +11,13 @@ import EventPackage from "./EventPackage";
 import EventBasicInfo from "./EventBasicInfo"
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
+import { createEvent } from "../../api/CreateEventPost";
 
 
 function CreateEvents() {
     const dispatch = useDispatch();
     const [step, setStep] = useState(0)
+    const[loading,setLoading]= useState(false)
     const [eventDetails, setEventDetails] = useState({
         eventName: "",
         eventImage: null,
@@ -100,13 +102,13 @@ function CreateEvents() {
     }
 
     const handleTabChange = (event, newValue) => {
-        // if (newValue === 1 && !isBasicInfoValid()) {
-        //     dispatch(showSnackbar({
-        //         message: "Please Complete Event Basic Information first",
-        //         severity: "warning"
-        //     }))
-        //     return
-        // }
+        if (newValue === 1 && !isBasicInfoValid()) {
+            dispatch(showSnackbar({
+                message: "Please Complete Event Basic Information first",
+                severity: "warning"
+            }))
+            return
+        }
         setStep(newValue)
     }
     
@@ -117,7 +119,88 @@ useEffect(() => {
 useEffect(() => {
     console.log("package Details Updated 👉", packageDetails);
 }, [packageDetails]);
+const handleSubmitEvent = async () => {
+  try {
+    setLoading(true);
 
+    const payload = {
+      eventName: eventDetails.eventName,
+      eventImage:
+        typeof eventDetails.eventImage === "string"
+          ? eventDetails.eventImage
+          : "https://placehold.co/600x400",
+
+      eventLocation: eventDetails.eventLocation?.label || "Unknown",
+
+      eventStartDate: eventDetails.eventStartDate
+        ? eventDetails.eventStartDate.toISOString()
+        : null,
+      eventEndDate: eventDetails.eventEndDate
+        ? eventDetails.eventEndDate.toISOString()
+        : null,
+
+      ticketStartDate: eventDetails.ticketStartDate
+        ? eventDetails.ticketStartDate.toISOString()
+        : null,
+      ticketEndDate: eventDetails.ticketEndDate
+        ? eventDetails.ticketEndDate.toISOString()
+        : null,
+
+      eventCapacity: Number(eventDetails.eventCapacity),
+      eventTags: eventDetails.eventTags,
+      eventDescription: eventDetails.eventDescription,
+
+      // ✅ MUST BE OBJECT
+      packages: {
+        list: packageDetails.map(pkg => ({
+          packageName: pkg.packageName,
+          price: Number(pkg.price),
+          allowedPersons: Number(pkg.allowedPersons),
+          quantity: Number(pkg.quantity),
+          description: pkg.description,
+        })),
+      },
+
+      status: "draft",
+    };
+
+    console.log("FINAL PAYLOAD 👉", payload);
+
+    await createEvent(payload); // POST /event ✅
+
+    dispatch(showSnackbar({
+      message: "Event created successfully",
+      severity: "success",
+    }));
+  } catch (error) {
+    console.error("CREATE EVENT ERROR 👉", error);
+    dispatch(showSnackbar({
+      message: "Failed to create event",
+      severity: "error",
+    }));
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+//   const handleSubmitEvent = async () => {
+//     try {
+//       setLoading(true);
+
+//       const payload = {
+//         packages: packageDetails,
+//       };
+
+//       await createEvent(payload);
+
+//       alert("Event created successfully");
+//     } catch (error) {
+//       alert("Failed to create event");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
     return (
         <form onSubmit={(e) => e.preventDefault()}>
             <Stack sx={{ display: "flex", alignItems: "center" }} >
@@ -163,6 +246,7 @@ useEffect(() => {
                                     packageDetails={packageDetails}
                                     setPackageDetails={setPackageDetails}
                                     setStep={setStep}
+  onSubmit={handleSubmitEvent}
 
                                 />
                             }
