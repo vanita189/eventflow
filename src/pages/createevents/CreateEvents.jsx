@@ -2,7 +2,7 @@ import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import EventIcon from "@mui/icons-material/Event";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import PrimaryButton from "../../components/PrimaryButton"
 import Tab from "@mui/material/Tab";
@@ -17,7 +17,7 @@ import { createEvent } from "../../api/CreateEventPost";
 function CreateEvents() {
     const dispatch = useDispatch();
     const [step, setStep] = useState(0)
-    const[loading,setLoading]= useState(false)
+    const [loading, setLoading] = useState(false)
     const [eventDetails, setEventDetails] = useState({
         eventName: "",
         eventImage: null,
@@ -111,96 +111,96 @@ function CreateEvents() {
         }
         setStep(newValue)
     }
-    
-useEffect(() => {
-    console.log("Event Details Updated 👉", eventDetails);
-}, [eventDetails]);
 
-useEffect(() => {
-    console.log("package Details Updated 👉", packageDetails);
-}, [packageDetails]);
-const handleSubmitEvent = async () => {
-  try {
-    setLoading(true);
+    useEffect(() => {
+        console.log("Event Details Updated 👉", eventDetails);
+    }, [eventDetails]);
 
-    const payload = {
-      eventName: eventDetails.eventName,
-      eventImage:
-        typeof eventDetails.eventImage === "string"
-          ? eventDetails.eventImage
-          : "https://placehold.co/600x400",
+    useEffect(() => {
+        console.log("package Details Updated 👉", packageDetails);
+    }, [packageDetails]);
+    const handleSubmitEvent = async () => {
+        try {
+            setLoading(true);
 
-      eventLocation: eventDetails.eventLocation?.label || "Unknown",
+            const payload = {
+                eventName: eventDetails.eventName,
+                eventImage:
+                    typeof eventDetails.eventImage === "string"
+                        ? eventDetails.eventImage
+                        : "https://placehold.co/600x400",
 
-      eventStartDate: eventDetails.eventStartDate
-        ? eventDetails.eventStartDate.toISOString()
-        : null,
-      eventEndDate: eventDetails.eventEndDate
-        ? eventDetails.eventEndDate.toISOString()
-        : null,
+                eventLocation: eventDetails.eventLocation?.label || "Unknown",
 
-      ticketStartDate: eventDetails.ticketStartDate
-        ? eventDetails.ticketStartDate.toISOString()
-        : null,
-      ticketEndDate: eventDetails.ticketEndDate
-        ? eventDetails.ticketEndDate.toISOString()
-        : null,
+                eventStartDate: eventDetails.eventStartDate
+                    ? eventDetails.eventStartDate.toISOString()
+                    : null,
+                eventEndDate: eventDetails.eventEndDate
+                    ? eventDetails.eventEndDate.toISOString()
+                    : null,
 
-      eventCapacity: Number(eventDetails.eventCapacity),
-      eventTags: eventDetails.eventTags,
-      eventDescription: eventDetails.eventDescription,
+                ticketStartDate: eventDetails.ticketStartDate
+                    ? eventDetails.ticketStartDate.toISOString()
+                    : null,
+                ticketEndDate: eventDetails.ticketEndDate
+                    ? eventDetails.ticketEndDate.toISOString()
+                    : null,
 
-      // ✅ MUST BE OBJECT
-      packages: {
-        list: packageDetails.map(pkg => ({
-          packageName: pkg.packageName,
-          price: Number(pkg.price),
-          allowedPersons: Number(pkg.allowedPersons),
-          quantity: Number(pkg.quantity),
-          description: pkg.description,
-        })),
-      },
+                eventCapacity: Number(eventDetails.eventCapacity),
+                eventTags: eventDetails.eventTags,
+                eventDescription: eventDetails.eventDescription,
 
-      status: "draft",
+                // ✅ MUST BE OBJECT
+                packages: {
+                    list: packageDetails.map(pkg => ({
+                        packageName: pkg.packageName,
+                        price: Number(pkg.price),
+                        allowedPersons: Number(pkg.allowedPersons),
+                        quantity: Number(pkg.quantity),
+                        description: pkg.description,
+                    })),
+                },
+
+                status: "draft",
+            };
+
+            console.log("FINAL PAYLOAD 👉", payload);
+
+            await createEvent(payload); // POST /event ✅
+
+            dispatch(showSnackbar({
+                message: "Event created successfully",
+                severity: "success",
+            }));
+        } catch (error) {
+            console.error("CREATE EVENT ERROR 👉", error);
+            dispatch(showSnackbar({
+                message: "Failed to create event",
+                severity: "error",
+            }));
+        } finally {
+            setLoading(false);
+        }
     };
 
-    console.log("FINAL PAYLOAD 👉", payload);
 
-    await createEvent(payload); // POST /event ✅
+    //   const handleSubmitEvent = async () => {
+    //     try {
+    //       setLoading(true);
 
-    dispatch(showSnackbar({
-      message: "Event created successfully",
-      severity: "success",
-    }));
-  } catch (error) {
-    console.error("CREATE EVENT ERROR 👉", error);
-    dispatch(showSnackbar({
-      message: "Failed to create event",
-      severity: "error",
-    }));
-  } finally {
-    setLoading(false);
-  }
-};
+    //       const payload = {
+    //         packages: packageDetails,
+    //       };
 
+    //       await createEvent(payload);
 
-//   const handleSubmitEvent = async () => {
-//     try {
-//       setLoading(true);
-
-//       const payload = {
-//         packages: packageDetails,
-//       };
-
-//       await createEvent(payload);
-
-//       alert("Event created successfully");
-//     } catch (error) {
-//       alert("Failed to create event");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+    //       alert("Event created successfully");
+    //     } catch (error) {
+    //       alert("Failed to create event");
+    //     } finally {
+    //       setLoading(false);
+    //     }
+    //   };
     return (
         <form onSubmit={(e) => e.preventDefault()}>
             <Stack sx={{ display: "flex", alignItems: "center" }} >
@@ -246,7 +246,7 @@ const handleSubmitEvent = async () => {
                                     packageDetails={packageDetails}
                                     setPackageDetails={setPackageDetails}
                                     setStep={setStep}
-  onSubmit={handleSubmitEvent}
+                                    onSubmit={handleSubmitEvent}
 
                                 />
                             }

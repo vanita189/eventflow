@@ -1,3 +1,4 @@
+import Counter from "../report/Counter";
 import Cards from "./Cards";
 import Piechart from "./Piechart";
 import Box from "@mui/material/Box";

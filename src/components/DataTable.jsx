@@ -63,7 +63,7 @@ const DataTable = ({
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  sx={{ minWidth: column.minWidth, whiteSpace: "nowrap" }}
+                  sx={{ minWidth: column.minWidth, whiteSpace: "nowrap" ,textAlign: "center",verticalAlign: "middle"}}
                 >
                   {column.label}
                 </TableCell>
@@ -85,7 +85,7 @@ const DataTable = ({
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align} sx={{ py: 1.5 }}>
+                      <TableCell key={column.id} align={column.align} sx={{ py: 1.5 ,textAlign: "center",verticalAlign: "middle"}}>
                         {column.format && typeof value === "number"
                           ? column.format(value)
                           : value}
