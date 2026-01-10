@@ -35,7 +35,7 @@ const DataTable = ({
             xs: "60vh",     // mobile → scroll INSIDE table
             sm: maxHeight,  // tablet & desktop
           },
-          maxHeight,
+          height:"auto",
           width: "100%",
           overflowX: "auto",
           overflowY: "auto",
