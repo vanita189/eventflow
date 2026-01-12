@@ -12,9 +12,12 @@ import EventBasicInfo from "./EventBasicInfo"
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 import { createEvent } from "../../api/CreateEventPost";
-
+import { useNavigate } from "react-router-dom";
+import { fetchEvents } from "../../redux/eventsslice/eventsSlice";
 
 function CreateEvents() {
+    const navigate = useNavigate();
+
     const dispatch = useDispatch();
     const [step, setStep] = useState(0)
     const [loading, setLoading] = useState(false)
@@ -120,6 +123,8 @@ function CreateEvents() {
         console.log("package Details Updated 👉", packageDetails);
     }, [packageDetails]);
     const handleSubmitEvent = async () => {
+        if (loading) return; // ✅ prevents multiple clicks
+
         try {
             setLoading(true);
 
@@ -166,12 +171,20 @@ function CreateEvents() {
 
             console.log("FINAL PAYLOAD 👉", payload);
 
-            await createEvent(payload); // POST /event ✅
+            const response = await createEvent(payload); // POST API
+            await dispatch(fetchEvents());
 
-            dispatch(showSnackbar({
-                message: "Event created successfully",
-                severity: "success",
-            }));
+            if (response?.status === 201 || response?.status === 200) {
+                dispatch(
+                    showSnackbar({
+                        message: "Event created successfully",
+                        severity: "success",
+                    })
+                );
+
+                // ✅ navigate ONLY after success
+                navigate("/dashboardlayout/events", { replace: true });
+            }
         } catch (error) {
             console.error("CREATE EVENT ERROR 👉", error);
             dispatch(showSnackbar({

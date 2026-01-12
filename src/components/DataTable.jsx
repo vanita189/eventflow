@@ -11,18 +11,18 @@ import TableRow from "@mui/material/TableRow";
 const DataTable = ({
   columns,
   rows,
+  page,
+  rowsPerPage,
+  total,
+  onPageChange,
+  onRowsPerPageChange,
   rowsPerPageOptions = [10, 25, 100],
   stickyHeader = true,
   maxHeight = 440,
 }) => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+
+
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
@@ -35,7 +35,7 @@ const DataTable = ({
             xs: "60vh",     // mobile → scroll INSIDE table
             sm: maxHeight,  // tablet & desktop
           },
-          height:"auto",
+          height: "auto",
           width: "100%",
           overflowX: "auto",
           overflowY: "auto",
@@ -63,7 +63,7 @@ const DataTable = ({
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  sx={{ minWidth: column.minWidth, whiteSpace: "nowrap" ,textAlign: "center",verticalAlign: "middle"}}
+                  sx={{ minWidth: column.minWidth, whiteSpace: "nowrap", textAlign: "center", verticalAlign: "middle" }}
                 >
                   {column.label}
                 </TableCell>
@@ -71,29 +71,17 @@ const DataTable = ({
             </TableRow>
           </TableHead>
 
+
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
-                <TableRow
-                  hover
-                  role="checkbox"
-                  tabIndex={-1}
-                  key={row.code || row.id || row.name}
-                  sx={{ "&:not(:last-child)": { mb: 1 }, display: "table-row" }}
-                >
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align} sx={{ py: 1.5 ,textAlign: "center",verticalAlign: "middle"}}>
-                        {column.format && typeof value === "number"
-                          ? column.format(value)
-                          : value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
+            {rows.map((row, idx) => (
+              <TableRow key={idx}>
+                {columns.map((column) => (
+                  <TableCell key={column.id} align="center">
+                    {row[column.id]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -101,11 +89,11 @@ const DataTable = ({
       <TablePagination
         rowsPerPageOptions={rowsPerPageOptions}
         component="div"
-        count={rows.length}
+        count={total}
         rowsPerPage={rowsPerPage}
         page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </Paper>
   );

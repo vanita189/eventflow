@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import PrimaryButton from "../../components/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEvents } from "../../redux/eventsslice/eventsSlice";
+import { fetchEvents, setSearch, setPage, setLimit } from "../../redux/eventsslice/eventsSlice";
 import InfoIcon from '@mui/icons-material/Info';
 
 const columns = [
@@ -26,13 +26,14 @@ const columns = [
 
 function Event() {
     const dispatch = useDispatch();
+
     const navigate = useNavigate();
 
-    const { events, loading } = useSelector((state) => state.events);
+    const { events, page, limit, total, search, loading } = useSelector((state) => state.events);
 
     useEffect(() => {
         dispatch(fetchEvents());
-    }, [dispatch]);
+    }, [dispatch, page, search, limit]);
 
     // ✅ MAP API DATA → TABLE ROWS (CORRECT PLACE)
     const rows = events.map((event, index) => ({
@@ -69,6 +70,8 @@ function Event() {
                     popupIcon={null}
                     renderInput={(params) => (
                         <TextField
+                            value={search}
+                            onChange={(e) => dispatch(setSearch(e.target.value))}
                             {...params}
                             placeholder="Search events"
                             size="small"
@@ -96,7 +99,17 @@ function Event() {
                 {loading ? (
                     <Typography>Loading events...</Typography>
                 ) : (
-                    <DataTable columns={columns} rows={rows} />
+                    <DataTable
+                        columns={columns}
+                        rows={rows}
+                        page={page}
+                        rowsPerPage={limit}
+                        total={total}
+                        onPageChange={(e, newPage) => dispatch(setPage(newPage))}
+                        onRowsPerPageChange={(e) =>
+                            dispatch(setLimit(parseInt(e.target.value, 10)))
+                        }
+                    />
                 )}
             </Box>
         </Box>
