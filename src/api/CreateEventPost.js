@@ -7,12 +7,13 @@ export const createEvent = async (payload) => {
   return res;
 };
 
-export const getEvents = async ({ page, limit, search }) => {
+export const getEvents = async ({ page, limit, search, }) => {
   const res = await axios.get("/event", {
     params: {
       page: page + 1,
       limit,
-      search
+      search,
+
     }
   })
 

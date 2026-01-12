@@ -11,8 +11,11 @@ import { useEffect } from "react";
 import PrimaryButton from "../../components/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEvents, setSearch, setPage, setLimit } from "../../redux/eventsslice/eventsSlice";
+import { fetchEvents, setSearch, setPage, setLimit, setStatus } from "../../redux/eventsslice/eventsSlice";
 import InfoIcon from '@mui/icons-material/Info';
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+
 
 const columns = [
     { id: "slNo", label: "Sl No" },
@@ -29,14 +32,44 @@ function Event() {
 
     const navigate = useNavigate();
 
-    const { events, page, limit, total, search, loading } = useSelector((state) => state.events);
+    const { events, page, limit, total, search, loading, status } = useSelector((state) => state.events);
 
     useEffect(() => {
         dispatch(fetchEvents());
-    }, [dispatch, page, search, limit]);
+    }, [dispatch, page, search, limit, status]);
+
+    const addLifecycleStatus = (events) => {
+        const now = new Date();
+
+        return events.map(event => {
+            const start = new Date(event.eventStartDate);
+            const end = new Date(event.eventEndDate);
+            let lifecycleStatus = "";
+
+            if (now < start) lifecycleStatus = "upcoming";
+            else if (now >= start && now <= end) lifecycleStatus = "live";
+            else lifecycleStatus = "completed";
+
+            return {
+                ...event,
+                lifecycleStatus
+            };
+        });
+    };
+
+    const eventsWithLifecycle = addLifecycleStatus(events);
+
+
+    const filteredEvents =
+        status === "all"
+            ? eventsWithLifecycle
+            : eventsWithLifecycle.filter(
+                (event) => event.lifecycleStatus === status
+            );
+
 
     // ✅ MAP API DATA → TABLE ROWS (CORRECT PLACE)
-    const rows = events.map((event, index) => ({
+    const rows = filteredEvents.map((event, index) => ({
         slNo: index + 1,
         eventName: event.eventName,
         eventStartDate: new Date(event.eventStartDate).toLocaleDateString(),
@@ -95,7 +128,71 @@ function Event() {
                 </PrimaryButton>
             </Box>
 
-            <Box mt={5}>
+            <Box mt={3}>
+
+                <Tabs
+                    value={status}
+                    onChange={(e, newValue) => dispatch(setStatus(newValue))}
+                    TabIndicatorProps={{ style: { display: "none" } }} // hide underline
+                    textColor="inherit" // important! makes sx color work
+                    sx={{
+                        display: "inline-flex",      // shrink to content
+
+                        bgcolor: "#fff",
+                        boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+                        borderRadius: 2,
+                    }}
+                >
+                    <Tab
+                        label="All"
+                        value="all"
+                        sx={{
+                            textTransform: "none",
+                            color: status === "all" ? "#000" : "#000",
+                            fontWeight: status === "all" ? 600 : 400,
+                            fontSize: "16px"
+                        }}
+                    />
+                    <Tab
+                        label="Live"
+                        value="live"
+                        sx={{
+                            textTransform: "none",
+                            color: status === "live" ? "#78e91c" : "#000",
+                            fontWeight: status === "live" ? 600 : 400,
+                            fontSize: "16px"
+
+                        }}
+                    />
+                    <Tab
+                        label="Upcoming"
+                        value="upcoming"
+                        sx={{
+                            textTransform: "none",
+                            color: status === "upcoming" ? "blue" : "#161515",
+                            fontWeight: status === "upcoming" ? 600 : 400,
+                            fontSize: "16px"
+
+                        }}
+                    />
+                    <Tab
+                        label="Completed"
+                        value="completed"
+                        sx={{
+                            textTransform: "none",
+                            color: status === "completed" ? "red" : "#161515",
+                            fontWeight: status === "completed" ? 800 : 400,
+                            fontSize: "16px"
+
+                        }}
+                    />
+                </Tabs>
+
+
+
+
+            </Box>
+            <Box mt={2}>
                 {loading ? (
                     <Typography>Loading events...</Typography>
                 ) : (
