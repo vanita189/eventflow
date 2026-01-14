@@ -14,6 +14,7 @@ import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 import { createEvent } from "../../api/CreateEventPost";
 import { useNavigate } from "react-router-dom";
 import { fetchEvents } from "../../redux/eventsslice/eventsSlice";
+import { uploadImage } from "../../utils/uploadImage";
 
 function CreateEvents() {
     const navigate = useNavigate();
@@ -122,20 +123,26 @@ function CreateEvents() {
     useEffect(() => {
         console.log("package Details Updated 👉", packageDetails);
     }, [packageDetails]);
+
     const handleSubmitEvent = async () => {
         if (loading) return; // ✅ prevents multiple clicks
+let imageUrl = "";
+     if (eventDetails.eventImage) {
+      imageUrl = await uploadImage(eventDetails.eventImage);
+      console.log("IMAGE URL:", imageUrl); // 👈 YOU WILL SEE THIS
+    }
 
         try {
             setLoading(true);
 
             const payload = {
                 eventName: eventDetails.eventName,
-                eventImage:
-                    typeof eventDetails.eventImage === "string"
-                        ? eventDetails.eventImage
-                        : "https://placehold.co/600x400",
+                eventImage:imageUrl,
+                    // typeof eventDetails.eventImage === "string"
+                    //     ? eventDetails.eventImage
+                    //     : "https://placehold.co/600x400",
 
-                eventLocation: eventDetails.eventLocation?.label || "Unknown",
+                eventLocation: eventDetails.eventLocation?.address || "Unknown",
 
                 eventStartDate: eventDetails.eventStartDate
                     ? eventDetails.eventStartDate.toISOString()
@@ -182,7 +189,7 @@ function CreateEvents() {
                     })
                 );
 
-                // ✅ navigate ONLY after success
+                //  navigate ONLY after success
                 navigate("/dashboardlayout/events", { replace: true });
             }
         } catch (error) {
@@ -196,24 +203,18 @@ function CreateEvents() {
         }
     };
 
+    const [selectedFile, setSelectedFile] = useState(null);
+const [preview, setPreview] = useState("");
 
-    //   const handleSubmitEvent = async () => {
-    //     try {
-    //       setLoading(true);
 
-    //       const payload = {
-    //         packages: packageDetails,
-    //       };
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    //       await createEvent(payload);
+  setSelectedFile(file);
+  setPreview(URL.createObjectURL(file));
+};
 
-    //       alert("Event created successfully");
-    //     } catch (error) {
-    //       alert("Failed to create event");
-    //     } finally {
-    //       setLoading(false);
-    //     }
-    //   };
     return (
         <form onSubmit={(e) => e.preventDefault()}>
             <Stack sx={{ display: "flex", alignItems: "center" }} >
@@ -226,9 +227,7 @@ function CreateEvents() {
                             </Typography>
                         </Box>
 
-                        {/* <PrimaryButton>
-                            Current Event
-                        </PrimaryButton> */}
+
 
                     </Box>
 

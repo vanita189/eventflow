@@ -7,6 +7,7 @@ import Ticket from "../subpages/Tickets/Ticket";
 import Report from "../subpages/report/Report";
 import User from "../subpages/users/User";
 import CreateEvents from "../pages/createevents/CreateEvents";
+import EventDetails from "../subpages/events/EventDetails";
 
 export const publicRoutes = [
     {
@@ -47,6 +48,10 @@ export const privateRoutes = [
             {
                 path: "report",
                 element: <Report />
+            },
+            {
+                path:"events/view/:id",
+                element:<EventDetails/>
             }
         ]
     },

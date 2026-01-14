@@ -7,6 +7,7 @@ export const createEvent = async (payload) => {
   return res;
 };
 
+//evens list 
 export const getEvents = async ({ page, limit, search, }) => {
   const res = await axios.get("/event", {
     params: {
@@ -23,5 +24,20 @@ export const getEvents = async ({ page, limit, search, }) => {
   }
 }
 
+//id
+export const getEventsById = async (id) => {
+  const res = await axios.get(`/event/${id}`);
+  return res.data
+}
 
+//delete event
+export const deleteEvent = async (id) => {
+  const res = await axios.delete(`event/${id}`);
+  return res;
+}
 
+//update event
+export const updateEvent = async (id, payload) => {
+  const res = await axios.put(`event/${id}`,payload);
+  return res;
+}

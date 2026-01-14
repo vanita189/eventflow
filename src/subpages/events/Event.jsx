@@ -12,10 +12,18 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEvents, setSearch, setPage, setLimit, setStatus } from "../../redux/eventsslice/eventsSlice";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { deleteEvent } from "../../api/CreateEventPost";
+import { showSnackbar } from "../../redux/snackbar/snackbarSlice";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import { useState } from "react";
 
 const columns = [
     { id: "slNo", label: "Sl No" },
@@ -68,7 +76,7 @@ function Event() {
             );
 
 
-    // ✅ MAP API DATA → TABLE ROWS (CORRECT PLACE)
+    // MAP API DATA → TABLE ROWS (CORRECT PLACE)
     const rows = filteredEvents.map((event, index) => ({
         slNo: index + 1,
         eventName: event.eventName,
@@ -80,8 +88,58 @@ function Event() {
             event.ticketEndDate
         ).toLocaleDateString()}`,
         eventCapacity: event.eventCapacity,
-        actions: <InfoIcon />,
+        actions: (
+            <Box display="flex" gap={1} justifyContent="center">
+                {/* View */}
+                <InfoOutlinedIcon
+                    sx={{ color: "#888afb", cursor: "pointer" }}
+                    onClick={() =>
+                        navigate(`/dashboardlayout/events/view/${event.id}`)
+                    }
+                />
+
+                {/* Delete */}
+                <DeleteOutlineIcon
+                    sx={{ color: "red", cursor: "pointer" }}
+                    onClick={() => {
+                        setSelectedEventId(event.id);
+                        setOpenDeleteDialog(true);
+                    }}
+                />
+
+            </Box>
+        ),
     }));
+    const handleConfirmDelete = async () => {
+        try {
+            await deleteEvent(selectedEventId);
+
+            dispatch(
+                showSnackbar({
+                    message: "Event deleted successfully",
+                    severity: "success",
+                })
+            );
+
+            dispatch(fetchEvents());
+        } catch (error) {
+            console.error("DELETE EVENT ERROR 👉", error);
+
+            dispatch(
+                showSnackbar({
+                    message: "Failed to delete event",
+                    severity: "error",
+                })
+            );
+        } finally {
+            setOpenDeleteDialog(false);
+            setSelectedEventId(null);
+        }
+    };
+
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [selectedEventId, setSelectedEventId] = useState(null);
+
 
     return (
         <Box>
@@ -181,7 +239,7 @@ function Event() {
                         sx={{
                             textTransform: "none",
                             color: status === "completed" ? "red" : "#161515",
-                            fontWeight: status === "completed" ? 800 : 400,
+                            fontWeight: status === "completed" ? 600 : 400,
                             fontSize: "16px"
 
                         }}
@@ -209,6 +267,32 @@ function Event() {
                     />
                 )}
             </Box>
+            <Dialog
+                open={openDeleteDialog}
+                onClose={() => setOpenDeleteDialog(false)}
+            >
+                <DialogTitle>Delete Event</DialogTitle>
+
+                <DialogContent>
+                    Are you sure you want to delete this event?
+                    This action cannot be undone.
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={() => setOpenDeleteDialog(false)}>
+                        Cancel
+                    </Button>
+
+                    <Button
+                        onClick={handleConfirmDelete}
+                        color="error"
+                        variant="contained"
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </Box>
     );
 }
