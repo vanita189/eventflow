@@ -135,7 +135,7 @@ function EventDetails() {
           >
             Edit
           </Button>
-         
+
         </Stack>
       </Box>
 
@@ -181,7 +181,7 @@ function EventDetails() {
             Packages
           </Typography>
           <Stack spacing={2}>
-            {event.packages.list.map((pkg, idx) => (
+            {event.packages?.list?.map((pkg, idx) => (
               <Paper
                 key={idx}
                 sx={{
