@@ -135,14 +135,7 @@ function EventDetails() {
           >
             Edit
           </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={() => setDeleteDialog(true)}
-          >
-            Delete
-          </Button>
+         
         </Stack>
       </Box>
 

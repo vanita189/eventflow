@@ -116,31 +116,31 @@ function CreateEvents() {
         setStep(newValue)
     }
 
-    useEffect(() => {
-        console.log("Event Details Updated 👉", eventDetails);
-    }, [eventDetails]);
+    // useEffect(() => {
+    //     console.log("Event Details Updated 👉", eventDetails);
+    // }, [eventDetails]);
 
-    useEffect(() => {
-        console.log("package Details Updated 👉", packageDetails);
-    }, [packageDetails]);
+    // useEffect(() => {
+    //     console.log("package Details Updated 👉", packageDetails);
+    // }, [packageDetails]);
 
     const handleSubmitEvent = async () => {
         if (loading) return; // ✅ prevents multiple clicks
-let imageUrl = "";
-     if (eventDetails.eventImage) {
-      imageUrl = await uploadImage(eventDetails.eventImage);
-      console.log("IMAGE URL:", imageUrl); // 👈 YOU WILL SEE THIS
-    }
+        let imageUrl = "";
+        if (eventDetails.eventImage) {
+            imageUrl = await uploadImage(eventDetails.eventImage);
+            console.log("IMAGE URL:", imageUrl); // 👈 YOU WILL SEE THIS
+        }
 
         try {
             setLoading(true);
 
             const payload = {
                 eventName: eventDetails.eventName,
-                eventImage:imageUrl,
-                    // typeof eventDetails.eventImage === "string"
-                    //     ? eventDetails.eventImage
-                    //     : "https://placehold.co/600x400",
+                eventImage: imageUrl,
+                // typeof eventDetails.eventImage === "string"
+                //     ? eventDetails.eventImage
+                //     : "https://placehold.co/600x400",
 
                 eventLocation: eventDetails.eventLocation?.address || "Unknown",
 
@@ -204,16 +204,16 @@ let imageUrl = "";
     };
 
     const [selectedFile, setSelectedFile] = useState(null);
-const [preview, setPreview] = useState("");
+    const [preview, setPreview] = useState("");
 
 
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
-  setSelectedFile(file);
-  setPreview(URL.createObjectURL(file));
-};
+        setSelectedFile(file);
+        setPreview(URL.createObjectURL(file));
+    };
 
     return (
         <form onSubmit={(e) => e.preventDefault()}>
