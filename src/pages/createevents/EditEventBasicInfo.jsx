@@ -1,0 +1,118 @@
+import { Box } from "@mui/material";
+import Stack from "@mui/material/Stack"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import PrimaryButton from "../../components/PrimaryButton";
+import { useState } from "react";
+import ImageUpload from "../../components/ImageUpload";
+import Location from "../../components/Location";
+
+function EditEventBasicInfo() {
+    const [eventImage, setEventImage] = useState(null);
+    const [location, setLocation] = useState(null);
+
+    return (
+        <Stack spacing={2} mt={1}>
+            <Stack display="flex" flexDirection={"row"} gap={2}>
+                <Stack flex={1} spacing={2}>
+                    <Box>
+                        <Typography fontWeight={600}>Event Name</Typography>
+                        <TextField fullWidth />
+                    </Box>
+                    <Box>
+                        <Typography fontWeight={600}>Event Image</Typography>
+                        <ImageUpload
+                            value={eventImage}
+                            onChange={setEventImage}
+                            width={"100%"}
+                            height={280}
+                        />
+                    </Box>
+                </Stack>
+                <Stack flex={1}>
+                    <Typography fontWeight={600}>Event Location</Typography>
+                    <Location
+                        value={location}
+                        onChange={setLocation}
+                    />
+                </Stack>
+            </Stack>
+
+            <Stack display={"flex"} flexDirection={"row"} gap={2}>
+                <Box flex={1}>
+                    <Typography fontWeight={600}>Event Start Date</Typography>
+                    <DateTimePicker
+                        slotProps={{
+                            textField: {
+                                fullWidth: true
+                            }
+                        }}
+                    />
+                </Box>
+                <Box flex={1}>
+                    <Typography fontWeight={600}>Event End Date</Typography>
+                    <DateTimePicker
+                        slotProps={{
+                            textField: {
+                                fullWidth: true
+                            }
+                        }}
+                    />
+                </Box>
+            </Stack>
+
+            <Stack display={"flex"} flexDirection={"row"} gap={2}>
+                <Box flex={1}>
+                    <Typography fontWeight={600}>Ticket Distribution Start</Typography>
+                    <DateTimePicker
+                        slotProps={{
+                            textField: {
+                                fullWidth: true
+                            }
+                        }}
+                    />
+                </Box>
+                <Box flex={1}>
+                    <Typography fontWeight={600}>Ticket Distribution End</Typography>
+                    <DateTimePicker
+                        slotProps={{
+                            textField: {
+                                fullWidth: true
+                            }
+                        }}
+                    />
+                </Box>
+            </Stack>
+
+            <Stack display={"flex"} flexDirection={"row"} gap={2}>
+                <Box flex={1}>
+                    <Typography fontWeight={600}>Event Capacity</Typography>
+                    <TextField fullWidth />
+                </Box>
+                <Box flex={1}>
+                    <Typography fontWeight={600}>Event Tags</Typography>
+                    <TextField fullWidth />
+                </Box>
+            </Stack>
+            <Stack>
+                <Typography fontWeight={600}>Event Description</Typography>
+                <TextField
+                    multiline
+                    minRows={4}
+                    placeholder="Enter Event Description"
+                    fullWidth
+                />
+            </Stack>
+            <Stack>
+                <Box justifyContent="space-between" display={"flex"}>
+                    <PrimaryButton>Cancel</PrimaryButton>
+                    <PrimaryButton>Next</PrimaryButton>
+                </Box>
+            </Stack>
+
+        </Stack>
+    )
+}
+
+export default EditEventBasicInfo

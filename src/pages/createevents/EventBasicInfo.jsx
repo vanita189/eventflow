@@ -196,4 +196,4 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
     )
 }
 
-export default EventBasicInfo
+export default EventBasicInfo                   

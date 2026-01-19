@@ -117,19 +117,19 @@ function CreateEvents() {
     }
 
     // useEffect(() => {
-    //     console.log("Event Details Updated 👉", eventDetails);
+    //     console.log("Event Details Updated ", eventDetails);
     // }, [eventDetails]);
 
     // useEffect(() => {
-    //     console.log("package Details Updated 👉", packageDetails);
+    //     console.log("package Details Updated ", packageDetails);
     // }, [packageDetails]);
 
     const handleSubmitEvent = async () => {
-        if (loading) return; // ✅ prevents multiple clicks
+        if (loading) return; //  prevents multiple clicks
         let imageUrl = "";
-        if (eventDetails.eventImage) {
+        if (eventDetails.eventImage instanceof File) {
             imageUrl = await uploadImage(eventDetails.eventImage);
-            console.log("IMAGE URL:", imageUrl); // 👈 YOU WILL SEE THIS
+            console.log("IMAGE URL:", imageUrl); // YOU WILL SEE THIS
         }
 
         try {
@@ -162,7 +162,7 @@ function CreateEvents() {
                 eventTags: eventDetails.eventTags,
                 eventDescription: eventDetails.eventDescription,
 
-                // ✅ MUST BE OBJECT
+                // MUST BE OBJECT
                 packages: {
                     list: packageDetails.map(pkg => ({
                         packageName: pkg.packageName,
@@ -176,7 +176,7 @@ function CreateEvents() {
                 status: "draft",
             };
 
-            console.log("FINAL PAYLOAD 👉", payload);
+            console.log("FINAL PAYLOAD ", payload);
 
             const response = await createEvent(payload); // POST API
             await dispatch(fetchEvents());
@@ -220,15 +220,12 @@ function CreateEvents() {
             <Stack sx={{ display: "flex", alignItems: "center" }} >
                 <Stack sx={{ maxWidth: { lg: "80%", md: "100%" }, width: "100%" }}>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Box display="flex" alignItems="center" gap={1}>
-                            <EventIcon />
-                            <Typography variant="h6" fontWeight={500} color="#5866f8ff">
+                        <Box display="flex" alignItems="center" gap={1} >
+                            <EventIcon sx={{ color: "#5866f8ff" }} />
+                            <Typography fontWeight={600} color="#5866f8ff" fontSize={20}>
                                 Create Event
                             </Typography>
                         </Box>
-
-
-
                     </Box>
 
                     <Paper sx={{
