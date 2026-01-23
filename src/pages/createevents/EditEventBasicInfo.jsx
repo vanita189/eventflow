@@ -4,13 +4,19 @@ import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import PrimaryButton from "../../components/PrimaryButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ImageUpload from "../../components/ImageUpload";
 import Location from "../../components/Location";
 
-function EditEventBasicInfo() {
-    const [eventImage, setEventImage] = useState(null);
-    const [location, setLocation] = useState(null);
+function EditEventBasicInfo({
+    eventDetails,
+    setEventDetails,
+    validateBasicInfo
+}) {
+
+    // useEffect(() => {
+    //   console.log("EVENT DETAILS STATE 1234👉", eventDetails);
+    // }, [eventDetails]);
 
     return (
         <Stack spacing={2} mt={1}>
@@ -21,14 +27,24 @@ function EditEventBasicInfo() {
                         <TextField
                             fullWidth
                             placeholder="Enter the event name here"
-
+                            value={eventDetails.eventName}
+                            onChange={(e) =>
+                                setEventDetails(prev => ({
+                                    ...prev,
+                                    eventName: e.target.value,
+                                }))
+                            }
                         />
                     </Box>
                     <Box>
                         <Typography fontWeight={600}>Event Image</Typography>
                         <ImageUpload
-                            value={eventImage}
-                            onChange={setEventImage}
+                            // value={eventDetails.eventImage}
+                            // onChange={(file)=>
+                            //     setEventDetails(prev=>({
+                            //         ...prev,
+                            //         eventImage:file
+                            //     }))}
                             width={"100%"}
                             height={280}
                         />
@@ -37,8 +53,8 @@ function EditEventBasicInfo() {
                 <Stack flex={1}>
                     <Typography fontWeight={600}>Event Location</Typography>
                     <Location
-                        value={location}
-                        onChange={setLocation}
+                    // value={location}
+                    // onChange={setLocation}
                     />
                 </Stack>
             </Stack>

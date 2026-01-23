@@ -1,104 +1,60 @@
+import { useEffect, useMemo } from "react";
 
+function EventImageUpload({ value, onChange }) {
+  const previewUrl = useMemo(() => {
+    if (!value) return null;
 
-import { Box, Typography, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useState, useRef } from "react";
+    // 1️⃣ If value is already a URL string (edit mode)
+    if (typeof value === "string") {
+      return value;
+    }
 
+    // 2️⃣ If value is a File (create/update)
+    if (value instanceof File) {
+      return URL.createObjectURL(value);
+    }
 
+    return null;
+  }, [value]);
 
-function EventImageUpload({ onChange, value }) {
-    // const [image, setImage] = useState(null);
-    const inputRef = useRef(null);
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            onChange(file); // send file to parent
-        }
+  // Cleanup object URL
+  useEffect(() => {
+    return () => {
+      if (value instanceof File) {
+        URL.revokeObjectURL(previewUrl);
+      }
     };
+  }, [value, previewUrl]);
 
-
-
-    const handleRemoveImage = (e) => {
-        e.stopPropagation();
-        onChange?.(null); // ✅ clear in parent
-    };
-
-    return (
-        <Box
-            onClick={() => inputRef.current.click()}
-            sx={{
-                width: "100%",
-                height: "100%",
-                border: "1.5px dashed #ccc",
-                borderRadius: 2,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
-            }}
+  return (
+    <div>
+      {previewUrl ? (
+        <img
+          src={previewUrl}
+          alt="event"
+          style={{ width: "100%", height: 280, objectFit: "cover" }}
+        />
+      ) : (
+        <div
+          style={{
+            height: 280,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "1px dashed #ccc",
+          }}
         >
-            {value ? (
-                <>
-                    {/* <Box
-                        component="img"
-                        src={image}
-                        alt="event"
-                        sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",   // ✅ FULL image visible
-                            borderRadius: 2,
-                        }}
-                    /> */}
-                    <img
-                        src={URL.createObjectURL(value)}
-                        alt="event"
-                        style={{  width: "100%",
-                            height: "100%",
-                            objectFit: "contain",   // ✅ FULL image visible
-                            borderRadius: 2, }}
-                    />
+          No image selected
+        </div>
+      )}
 
-                    {/* Remove icon */}
-                    <IconButton
-                        size="small"
-                        onClick={handleRemoveImage}
-                        sx={{
-                            position: "absolute",
-                            top: 6,
-                            right: 6,
-                            backgroundColor: "rgba(0,0,0,0.6)",
-                            color: "#fff",
-                            "&:hover": {
-                                backgroundColor: "rgba(0,0,0,0.8)",
-                            },
-                        }}
-                    >
-                        <CloseIcon fontSize="small" />
-                    </IconButton>
-                </>
-            ) : (
-                <Box textAlign="center">
-                    <AddPhotoAlternateIcon color="action" sx={{ fontSize: 36 }} />
-                    <Typography variant="body2" color="text.secondary" mt={1}>
-                        Upload event banner
-                    </Typography>
-                </Box>
-            )}
-
-            <input
-                ref={inputRef}
-                hidden
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-            />
-        </Box>
-    );
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => onChange(e.target.files[0])}
+      />
+    </div>
+  );
 }
 
 export default EventImageUpload;
