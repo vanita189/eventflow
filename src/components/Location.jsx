@@ -79,8 +79,8 @@ function Location({ value, onChange }) {
             <Box sx={{ position: "relative", zIndex: 1000 }}>
                 <TextField
                     fullWidth
-                    label="Search Location"
                     value={search}
+                    placeholder="Search location here..."
                     onChange={(e) => {
                         setSearch(e.target.value);
                         handleSearch(e.target.value);

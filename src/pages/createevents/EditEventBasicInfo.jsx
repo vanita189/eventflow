@@ -18,7 +18,11 @@ function EditEventBasicInfo() {
                 <Stack flex={1} spacing={2}>
                     <Box>
                         <Typography fontWeight={600}>Event Name</Typography>
-                        <TextField fullWidth />
+                        <TextField
+                            fullWidth
+                            placeholder="Enter the event name here"
+
+                        />
                     </Box>
                     <Box>
                         <Typography fontWeight={600}>Event Image</Typography>
@@ -88,11 +92,17 @@ function EditEventBasicInfo() {
             <Stack display={"flex"} flexDirection={"row"} gap={2}>
                 <Box flex={1}>
                     <Typography fontWeight={600}>Event Capacity</Typography>
-                    <TextField fullWidth />
+                    <TextField
+                        fullWidth
+                        placeholder="Enter the capacity here"
+                    />
                 </Box>
                 <Box flex={1}>
                     <Typography fontWeight={600}>Event Tags</Typography>
-                    <TextField fullWidth />
+                    <TextField
+                        fullWidth
+                        placeholder="Enter the tags here"
+                    />
                 </Box>
             </Stack>
             <Stack>

@@ -106,13 +106,13 @@ function CreateEvents() {
     }
 
     const handleTabChange = (event, newValue) => {
-        if (newValue === 1 && !isBasicInfoValid()) {
-            dispatch(showSnackbar({
-                message: "Please Complete Event Basic Information first",
-                severity: "warning"
-            }))
-            return
-        }
+        // if (newValue === 1 && !isBasicInfoValid()) {
+        //     dispatch(showSnackbar({
+        //         message: "Please Complete Event Basic Information first",
+        //         severity: "warning"
+        //     }))
+        //     return
+        // }
         setStep(newValue)
     }
 
@@ -218,7 +218,7 @@ function CreateEvents() {
     return (
         <form onSubmit={(e) => e.preventDefault()}>
             <Stack sx={{ display: "flex", alignItems: "center" }} >
-                <Stack sx={{ maxWidth: { lg: "80%", md: "100%" }, width: "100%" }}>
+                <Stack sx={{ maxWidth: { lg: "80%", md: "100%" }, width: "100%" }} >
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                         <Box display="flex" alignItems="center" gap={1} >
                             <EventIcon sx={{ color: "#5866f8ff" }} />
