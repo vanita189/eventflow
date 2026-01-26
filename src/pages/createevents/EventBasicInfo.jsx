@@ -9,6 +9,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import PrimaryButton from '../../components/PrimaryButton';
 import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 import { useDispatch } from "react-redux";
+import Location from "../../components/Location";
+import ImageUpload from "../../components/ImageUpload"
 
 function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setStep, errors }) {
     const dispatch = useDispatch();
@@ -32,24 +34,26 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                     </Box>
                     <Box height={280}>
                         <Typography fontWeight={600} >Event Image</Typography>
-                        <EventImageUpload
-                            value={eventDetails.eventImage}
+                       
+                        <ImageUpload
+                        value={eventDetails.eventImage}
                             onChange={(file) => {
                                 setEventDetails({ ...eventDetails, eventImage: file })
-                            }}
-                        />
+                            }}/>
+                      
                     </Box>
                 </Stack>
                 <Stack flex={1}>
                     <Box>
                         <Typography fontWeight={600} >Event Location</Typography>
 
-                        <EventLocationPicker
-                            value={eventDetails.eventLocation}
+                        
+                          <Location
+                          value={eventDetails.eventLocation}
                             onChange={(location) => (
                                 setEventDetails({ ...eventDetails, eventLocation: location })
                             )}
-                        />
+                          />
                     </Box>
                 </Stack>
             </Stack>
