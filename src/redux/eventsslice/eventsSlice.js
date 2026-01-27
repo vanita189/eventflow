@@ -3,11 +3,11 @@ import { getEvents } from "../../api/CreateEventPost";
 
 // Async thunk
 export const fetchEvents = createAsyncThunk("events/fetchEvents", async (_, { getState, rejectWithValue }) => {
-   
+
 
     try {
-        const { page, limit, search,status } = getState().events;
-        return await getEvents({ page, limit, search ,status});
+        const { page, limit, search, status } = getState().events;
+        return await getEvents({ page, limit, search, status });
     } catch (error) {
         return rejectWithValue(error.message)
     }
@@ -21,7 +21,7 @@ const initialState = {
     page: 0,
     limit: 10,
     total: 0,
-    status:"all"
+    status: "all"
 }
 
 const eventsSlice = createSlice({
@@ -53,8 +53,13 @@ const eventsSlice = createSlice({
                 console.log("EVENTS API RESPONSE 👉", action.payload);
 
                 state.loading = false;
-                state.events = action.payload.data;
-                state.total = action.payload.total || action.payload.data.length;
+                const data = Array.isArray(action.payload)
+                    ? action.payload
+                    : action.payload?.data || [];
+
+                state.events = data;
+                state.total = data.length;
+
             })
             .addCase(fetchEvents.rejected, (state, action) => {
                 state.loading = false;
@@ -63,5 +68,5 @@ const eventsSlice = createSlice({
     }
 })
 
-export const { setSearch, setPage,setLimit,setStatus } = eventsSlice.actions;
+export const { setSearch, setPage, setLimit, setStatus } = eventsSlice.actions;
 export default eventsSlice.reducer;

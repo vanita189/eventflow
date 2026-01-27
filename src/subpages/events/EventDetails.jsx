@@ -35,14 +35,21 @@ function EventDetails() {
   const fetchEvent = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`/event/${id}`);
-      setEvent(addLifecycleStatus(res.data));
+      const res = await axios.get(`/events?id=eq.${id}`);
+
+      if (res.data.length > 0) {
+        setEvent(addLifecycleStatus(res.data[0]));
+      } else {
+        setEvent(null);
+      }
+
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
   };
+
 
   const addLifecycleStatus = (event) => {
     const now = new Date();

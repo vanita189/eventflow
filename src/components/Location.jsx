@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { useEffect, useRef, useState } from "react";
-import { Box, TextField, Typography, List, ListItem } from "@mui/material";
+import { Box, TextField, Typography, List, ListItem,ListItemButton } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 
 function Location({ value, onChange }) {
@@ -99,15 +99,14 @@ function Location({ value, onChange }) {
                     }}
                 >
                     {results.map((item) => (
-                        <ListItem
-                            button
-                            key={item.place_id}
-                            onClick={() => handleSelectLocation(item)}
-                        >
-                            <Typography variant="body2">
-                                {item.display_name}
-                            </Typography>
+                        <ListItem key={item.place_id} disablePadding>
+                            <ListItemButton onClick={() => handleSelectLocation(item)}>
+                                <Typography variant="body2">
+                                    {item.display_name}
+                                </Typography>
+                            </ListItemButton>
                         </ListItem>
+
                     ))}
                 </List>
             )}

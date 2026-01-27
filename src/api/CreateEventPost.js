@@ -41,42 +41,42 @@
 //   const res = await axios.put(`event/${id}`,payload);
 //   return res;
 // }
+import axiosInstance from "../utils/axios"
 
-import axios from "../utils/axios";
 
-/* Create Event */
+// Create event
 export const createEvent = async (payload) => {
-  return axios.post("/events", payload);
-};
-
-/* Events list */
-export const getEvents = async () => {
-  const res = await axios.get("/events", {
-    params: {
-      select: "*",
-      order: "created_at.desc",
-    },
-  });
+  const res = await axiosInstance.post("/events", payload);
   return res.data;
 };
 
-/* Event by ID */
+// Fetch all events
+export const getEvents = async () => {
+  const res = await axiosInstance.get(
+    "/events?select=*&order=created_at.desc"
+  );
+
+  return {
+    data: res.data,       // 👈 what Redux uses
+    total: res.data.length // 👈 for pagination
+  };
+};
+
+
+// Get event by ID
 export const getEventsById = async (id) => {
-  const res = await axios.get("/events", {
-    params: {
-      id: `eq.${id}`,
-      select: "*",
-    },
-  });
+  const res = await axiosInstance.get(`/events?select=*&id=eq.${id}`);
   return res.data[0];
 };
 
-/* Update event */
+// Update event
 export const updateEvent = async (id, payload) => {
-  return axios.patch(`/events?id=eq.${id}`, payload);
+  const res = await axiosInstance.patch(`/events?id=eq.${id}`, payload);
+  return res.data;
 };
 
-/* Delete event */
+// Delete event
 export const deleteEvent = async (id) => {
-  return axios.delete(`/events?id=eq.${id}`);
+  const res = await axiosInstance.delete(`/events?id=eq.${id}`);
+  return res.data;
 };

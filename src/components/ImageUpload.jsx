@@ -1,25 +1,46 @@
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Box from "@mui/material/Box";
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { uploadImage } from "../api/uploadImage"
 
 function ImageUpload({ value, onChange }) {
     const inputRef = useRef(null);
+    const [uploading, setUploading] = useState(false); // optional: show loading state
 
-    const handleFileChange = (event) => {
+    const handleFileChange = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
-        //basic validation
+        // Basic validation
         if (!file.type.startsWith("image/")) {
-            alert("only image files are allowed");
+            alert("Only image files are allowed");
             return;
-
         }
-        onChange(file);
-    }
+
+        try {
+            setUploading(true); // start loading
+
+            // Upload file to Cloudinary
+            const imageUrl = await uploadImage(file);
+
+            // Pass the uploaded URL back to parent
+            onChange(imageUrl);
+
+        } catch (err) {
+            console.error("Upload failed:", err.message);
+            alert("Image upload failed. Try again!");
+        } finally {
+            setUploading(false); // end loading
+        }
+    };
+
+    const handleRemove = () => {
+        onChange(null);
+    };
+
     return (
         <Box
             border="2px dashed #ccc"
@@ -27,51 +48,42 @@ function ImageUpload({ value, onChange }) {
             p={2}
             textAlign="center"
             position="relative"
+            sx={{ cursor: !value ? "pointer" : "default" }}
+            onClick={() => !value && inputRef.current.click()}
         >
-            {
-                value ? (
-                    <>
-
-                        <img
-                            src={URL.createObjectURL(value)}
-                            alt="event"
-                            style={{ width: "100%", height: 180, objectFit: "cover" }}
-                        />
-                        <IconButton
-                            size="small"
-                            onClick={() => onChange(null)}
-                            sx={{ position: "absolute", top: 8, right: 8 }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    </>
-                ) : (
-                    <Box onClick={() => inputRef.current.click()} sx={{cursor:"pointer"}}
+            {value ? (
+                <>
+                    <img
+                        src={value}
+                        alt="event"
+                        style={{ width: "100%", height: 180, objectFit: "cover" }}
+                    />
+                    <IconButton
+                        size="small"
+                        onClick={handleRemove}
+                        sx={{ position: "absolute", top: 8, right: 8 }}
+                        aria-label="Remove image"
                     >
-                        <AddPhotoAlternateIcon fontSize="large" />
-                        <Typography fontWeight={500}>
-                            Click to upload image
-                        </Typography>
-                        <input
-                            type="file"
-                            hidden
-                            ref={inputRef}
-                            onChange={handleFileChange}
-                            accept="image/*"
-
-                        />
-                        <Box
-                            sx={{ cursor: "pointer" }}
-                        >
-                            <Typography color="Primary">Upload</Typography>
-                        </Box>
-
-                    </Box>
-                )
-            }
-
+                        <CloseIcon />
+                    </IconButton>
+                </>
+            ) : (
+                <>
+                    <AddPhotoAlternateIcon fontSize="large" />
+                    <Typography fontWeight={500}>
+                        {uploading ? "Uploading..." : "Click to upload image"}
+                    </Typography>
+                    <input
+                        type="file"
+                        hidden
+                        ref={inputRef}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                    />
+                </>
+            )}
         </Box>
-    )
+    );
 }
 
-export default ImageUpload
+export default ImageUpload;

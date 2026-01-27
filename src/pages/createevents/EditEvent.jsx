@@ -211,16 +211,15 @@ function EditEvent() {
 
             const response = await updateEvent(id, payload); // ✅ PUT API
 
-            if (response?.status === 200) {
-                dispatch(
-                    showSnackbar({
-                        message: "Event updated successfully",
-                        severity: "success",
-                    })
-                );
+            dispatch(
+                showSnackbar({
+                    message: "Event updated successfully",
+                    severity: "success",
+                })
+            );
 
-                navigate("/dashboardlayout/events", { replace: true });
-            }
+            navigate("/dashboardlayout/events", { replace: true });
+
         } catch (error) {
             console.error("UPDATE EVENT ERROR 👉", error);
             dispatch(

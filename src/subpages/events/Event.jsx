@@ -45,27 +45,25 @@ function Event() {
     useEffect(() => {
         dispatch(fetchEvents());
     }, [dispatch, page, search, limit, status]);
+const addLifecycleStatus = (events = []) => {
+  if (!Array.isArray(events)) return [];
 
-    const addLifecycleStatus = (events) => {
-        const now = new Date();
+  return events.map(event => {
+    const now = new Date();
+    const start = new Date(event.eventStartDate);
+    const end = new Date(event.eventEndDate);
 
-        return events.map(event => {
-            const start = new Date(event.eventStartDate);
-            const end = new Date(event.eventEndDate);
-            let lifecycleStatus = "";
+    let lifecycleStatus = "upcoming";
+    if (now >= start && now <= end) lifecycleStatus = "live";
+    else if (now > end) lifecycleStatus = "completed";
 
-            if (now < start) lifecycleStatus = "upcoming";
-            else if (now >= start && now <= end) lifecycleStatus = "live";
-            else lifecycleStatus = "completed";
+    return { ...event, lifecycleStatus };
+  });
+};
 
-            return {
-                ...event,
-                lifecycleStatus
-            };
-        });
-    };
 
-    const eventsWithLifecycle = addLifecycleStatus(events);
+const eventsWithLifecycle = addLifecycleStatus(events ?? []);
+
 
 
     const filteredEvents =
@@ -259,7 +257,7 @@ function Event() {
                         rows={rows}
                         page={page}
                         rowsPerPage={limit}
-                        total={total}
+total={filteredEvents.length}
                         onPageChange={(e, newPage) => dispatch(setPage(newPage))}
                         onRowsPerPageChange={(e) =>
                             dispatch(setLimit(parseInt(e.target.value, 10)))

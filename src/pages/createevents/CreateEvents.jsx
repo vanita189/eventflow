@@ -14,7 +14,7 @@ import { showSnackbar } from "../../redux/snackbar/snackbarSlice"
 import { createEvent } from "../../api/CreateEventPost";
 import { useNavigate } from "react-router-dom";
 import { fetchEvents } from "../../redux/eventsslice/eventsSlice";
-import { uploadImage } from "../../utils/uploadImage";
+import { uploadImage } from "../../api/uploadImage"
 
 function CreateEvents() {
     const navigate = useNavigate();
@@ -126,15 +126,18 @@ function CreateEvents() {
 
     const handleSubmitEvent = async () => {
         if (loading) return; //  prevents multiple clicks
-        let imageUrl = "";
-        if (eventDetails.eventImage instanceof File) {
-            imageUrl = await uploadImage(eventDetails.eventImage);
-            console.log("IMAGE URL:", imageUrl); // YOU WILL SEE THIS
-        }
+
+
 
         try {
             setLoading(true);
 
+            let imageUrl = eventDetails.eventImage;
+
+            // upload ONLY if user selected a new file
+            if (eventDetails.eventImage instanceof File) {
+                imageUrl = await uploadImage(eventDetails.eventImage);
+            }
             const payload = {
                 eventName: eventDetails.eventName,
                 eventImage: imageUrl,
@@ -181,17 +184,15 @@ function CreateEvents() {
             const response = await createEvent(payload); // POST API
             await dispatch(fetchEvents());
 
-            if (response?.status === 201 || response?.status === 200) {
-                dispatch(
-                    showSnackbar({
-                        message: "Event created successfully",
-                        severity: "success",
-                    })
-                );
+            dispatch(
+                showSnackbar({
+                    message: "Event created successfully",
+                    severity: "success",
+                })
+            );
 
-                //  navigate ONLY after success
-                navigate("/dashboardlayout/events", { replace: true });
-            }
+            //  navigate ONLY after success
+            navigate("/dashboardlayout/events", { replace: true });
         } catch (error) {
             console.error("CREATE EVENT ERROR 👉", error);
             dispatch(showSnackbar({
