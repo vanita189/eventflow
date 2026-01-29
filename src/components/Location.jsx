@@ -1,6 +1,6 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { useEffect, useRef, useState } from "react";
-import { Box, TextField, Typography, List, ListItem,ListItemButton } from "@mui/material";
+import { Box, TextField, Typography, List, ListItem, ListItemButton } from "@mui/material";
 import "leaflet/dist/leaflet.css";
 
 function Location({ value, onChange }) {
@@ -85,8 +85,14 @@ function Location({ value, onChange }) {
                         setSearch(e.target.value);
                         handleSearch(e.target.value);
                     }}
-                    sx={{ mb: 1 }}
-                />
+                    sx={{
+                        mb:2,
+                        mt: 0.5,
+                        "& .MuiOutlinedInput-root": {
+                            borderRadius: "12px",
+                            background: "#fff",
+                        },
+                    }} />
             </Box>
 
             {results.length > 0 && (

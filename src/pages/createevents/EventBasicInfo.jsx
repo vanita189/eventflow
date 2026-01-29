@@ -29,31 +29,37 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                             )}
                             placeholder="Enter Event Name"
                             fullWidth
-
+                            sx={{
+                                mt: 0.5,
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: "12px",
+                                    background: "#fff",
+                                },
+                            }}
                         />
                     </Box>
                     <Box height={280}>
                         <Typography fontWeight={600} >Event Image</Typography>
-                       
+
                         <ImageUpload
-                        value={eventDetails.eventImage}
+                            value={eventDetails.eventImage}
                             onChange={(file) => {
                                 setEventDetails({ ...eventDetails, eventImage: file })
-                            }}/>
-                      
+                            }} />
+
                     </Box>
                 </Stack>
                 <Stack flex={1}>
                     <Box>
                         <Typography fontWeight={600} >Event Location</Typography>
 
-                        
-                          <Location
-                          value={eventDetails.eventLocation}
+
+                        <Location
+                            value={eventDetails.eventLocation}
                             onChange={(location) => (
                                 setEventDetails({ ...eventDetails, eventLocation: location })
                             )}
-                          />
+                        />
                     </Box>
                 </Stack>
             </Stack>
@@ -71,27 +77,45 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                             textField: {
                                 fullWidth: true,
                                 error: !!errors.eventStartDate,
-                                helperText: errors.eventStartDate
+                                helperText: errors.eventStartDate,
+                                InputProps: {
+                                    sx: {
+                                        borderRadius: "12px",
+                                        backgroundColor: "#fff",
+                                    },
+                                },
                             },
                         }}
+
                     />
                 </Box>
                 <Box flex={1}>
                     <Typography fontWeight={600} >Event End Date</Typography>
                     <DateTimePicker
                         value={eventDetails.eventEndDate}
-                        onChange={(newValue) => setEventDetails({
-                            ...eventDetails, eventEndDate: newValue
-                        })}
+                        onChange={(newValue) =>
+                            setEventDetails({
+                                ...eventDetails,
+                                eventEndDate: newValue,
+                            })
+                        }
                         disablePast
                         slotProps={{
                             textField: {
                                 fullWidth: true,
                                 error: !!errors.eventEndDate,
-                                helperText: errors.eventEndDate
+                                helperText: errors.eventEndDate,
+                                InputProps: {
+                                    sx: {
+                                        borderRadius: "12px",
+                                        backgroundColor: "#fff",
+                                    },
+                                },
                             },
                         }}
+
                     />
+
                 </Box>
             </Stack>
 
@@ -109,7 +133,13 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                             textField: {
                                 fullWidth: true,
                                 error: !!errors.ticketStartDate,
-                                helperText: errors.ticketStartDate
+                                helperText: errors.ticketStartDate,
+                                InputProps: {
+                                    sx: {
+                                        borderRadius: "12px",
+                                        backgroundColor: "#fff",
+                                    },
+                                },
 
                             },
                         }}
@@ -127,7 +157,13 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                             textField: {
                                 fullWidth: true,
                                 error: !!errors.ticketEndDate,
-                                helperText: errors.ticketEndDate
+                                helperText: errors.ticketEndDate,
+                                InputProps: {
+                                    sx: {
+                                        borderRadius: "12px",
+                                        backgroundColor: "#fff",
+                                    },
+                                },
 
                             },
                         }}
@@ -147,7 +183,13 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         })}
                         placeholder="Enter Event Name"
                         fullWidth
-
+                        sx={{
+                            mt: 0.5,
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px",
+                                background: "#fff",
+                            },
+                        }}
                     />
                 </Box>
                 <Box flex={1}>
@@ -157,6 +199,13 @@ function EventBasicInfo({ eventDetails, setEventDetails, validateBasicInfo, setS
                         onChange={(e) => setEventDetails({ ...eventDetails, eventTags: e.target.value })}
                         placeholder="Enter Event Name"
                         fullWidth
+                        sx={{
+                            mt: 0.5,
+                            "& .MuiOutlinedInput-root": {
+                                borderRadius: "12px",
+                                background: "#fff",
+                            },
+                        }}
                     />
                 </Box>
             </Stack>

@@ -23,6 +23,13 @@ function Editor({
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         placeholder="Enter description..."
+        sx={{
+          mt: 0.5,
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "12px",
+            background: "#fff",
+          },
+        }}
       />
     </Box>
   );

@@ -9,6 +9,8 @@ import User from "../subpages/users/User";
 import CreateEvents from "../pages/createevents/CreateEvents";
 import EventDetails from "../subpages/events/EventDetails";
 import EditEvent from "../pages/createevents/EditEvent";
+import CreateTicket from "../pages/createtickets/CreateTicket";
+import TicketList from "../pages/createtickets/TicketList";
 
 export const publicRoutes = [
     {
@@ -40,7 +42,7 @@ export const privateRoutes = [
             },
             {
                 path: "ticket",
-                element: <Ticket />
+                element: <TicketList />
             },
             {
                 path: "user",
@@ -57,7 +59,11 @@ export const privateRoutes = [
             {
                 path:"events/edit/:id",
                 element:<EditEvent/>
-            }
+            },
+            {
+                path:"ticket/create",
+                element:<CreateTicket/>
+            },
         ]
     },
    

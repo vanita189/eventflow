@@ -231,7 +231,27 @@ function CreateEvents() {
 
                     <Paper sx={{
                         p: "16px 32px", // top-bottom | left-right
-                        border: "0.5px solid #cfcbcbff", borderRadius: 2
+                        border: "0.5px solid #cfcbcbff", borderRadius: 2,
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+
+                        background: "linear-gradient(180deg, #ffffff 0%, #faf7ff 100%)",
+                         overflowY: "auto",
+                                height: "80vh",
+
+                                "&::-webkit-scrollbar": {
+                                    width: "6px",
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                    background: "transparent",
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    background: "#8338EC",
+                                    borderRadius: "20px",
+                                },
+                                "&::-webkit-scrollbar-thumb:hover": {
+                                    background: "#5a20c9",
+                                },
+
                     }}>
                         <Box sx={{ borderBottom: "1px solid #ccc" }}>
                             <Tabs value={step} onChange={handleTabChange} variant="fullWidth">

@@ -48,7 +48,8 @@ function ImageUpload({ value, onChange }) {
             p={2}
             textAlign="center"
             position="relative"
-            sx={{ cursor: !value ? "pointer" : "default" }}
+            sx={{ cursor: !value ? "pointer" : "default" ,borderRadius: "12px",
+                                background: "#fff", }}
             onClick={() => !value && inputRef.current.click()}
         >
             {value ? (
@@ -56,7 +57,8 @@ function ImageUpload({ value, onChange }) {
                     <img
                         src={value}
                         alt="event"
-                        style={{ width: "100%", height: 180, objectFit: "cover" }}
+                        style={{ width: "100%", height: 180, objectFit: "cover", }}
+                         
                     />
                     <IconButton
                         size="small"
@@ -79,6 +81,7 @@ function ImageUpload({ value, onChange }) {
                         ref={inputRef}
                         onChange={handleFileChange}
                         accept="image/*"
+                        
                     />
                 </>
             )}
