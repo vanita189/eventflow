@@ -9,8 +9,12 @@ import { useState } from "react";
 function CreateTicket() {
     const [selectedEvent, setSelectedEvent] = useState("");
     const [loading, setLoading] = useState(false)
-    const [countryCode, setCountryCode] = useState()
-    const [phone, setPhone] = useState()
+    const [countryCode, setCountryCode] = useState("+91")
+    const [phone, setPhone] = useState("")
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("");
+    const [counts, setCounts] = useState({});
+
     const dispatch = useDispatch();
 
     const navigate = useNavigate();
@@ -27,10 +31,18 @@ function CreateTicket() {
         }
     }, [events]);
 
+    useEffect(() => {
+        setCounts({});
+    }, [selectedEvent]);
+
+
     const selectedEventData = events.find(e => e.id === Number(selectedEvent));
     const packages = selectedEventData?.packages?.list || [];
 
-    const [counts, setCounts] = useState({});
+    if (!selectedEventData) {
+        return <Typography>Loading event data...</Typography>;
+    }
+
 
     const handleIncrease = (index) => {
         setCounts((prev) => ({
@@ -51,14 +63,29 @@ function CreateTicket() {
         return sum + qty * pkg.price;
     }, 0);
 
-    const [name, setName] = useState("")
-    const [email, setEmail] = useState("");
+
 
     const validationForm = () => {
         if (!selectedEvent) return "Please Select Event";
+
         if (!phone || phone.length !== 10) return "Enter valid phone number"
+        if (/^0/.test(phone)) return "Phone number cannot start with 0";
+
+
         if (!email || !/\S+@\S+\.\S+/.test(email)) return "Enter valid email"
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) return "Invalid email format";
+
         if (!name.trim()) return "Enter your name"
+        if (name.length < 3) return "Name must be at least 3 characters";
+
+        const selectedPackages = packages.filter((pkg, index) => (counts[index] || 0) > 0);
+
+        if (selectedPackages.length === 0) {
+            return "Please select at least one ticket";
+        }
+
+
         return null;
     }
     return (
@@ -177,6 +204,8 @@ function CreateTicket() {
                                             Email
                                         </Typography>
                                         <TextField
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                             fullWidth
                                             type="email"
                                             placeholder="Enter your email"
@@ -197,6 +226,8 @@ function CreateTicket() {
                                         Enter Name
                                     </Typography>
                                     <TextField
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                         placeholder="Enter the name"
                                         fullWidth
                                         sx={{
@@ -318,8 +349,18 @@ function CreateTicket() {
                                         pt: 1,
                                     }}
                                 >
-                                    <PrimaryButton>Cancel</PrimaryButton>
-                                    <PrimaryButton>Create Ticket</PrimaryButton>
+                                    <PrimaryButton onClick={() => navigate(-1)}>Cancel</PrimaryButton>
+                                    <PrimaryButton disabled={loading}
+                                        onClick={() => {
+                                            const error = validationForm();
+                                            if (error) {
+                                                dispatch(showSnackbar({ message: error, severity: "error" }))
+                                                return
+                                            }
+                                        }}
+
+                                    >  {loading ? "Creating..." : "Create Ticket"}
+                                    </PrimaryButton>
                                 </Box>
                             </Stack>
                         </Paper>
