@@ -11,6 +11,7 @@ import EventDetails from "../subpages/events/EventDetails";
 import EditEvent from "../pages/createevents/EditEvent";
 import CreateTicket from "../pages/createtickets/CreateTicket";
 import TicketList from "../pages/createtickets/TicketList";
+import TicketRedemption from "../pages/reedemption/TicketRedemption";
 
 export const publicRoutes = [
     {
@@ -64,6 +65,10 @@ export const privateRoutes = [
                 path:"ticket/create",
                 element:<CreateTicket/>
             },
+            {
+                path:"redeem",
+                element:<TicketRedemption/>
+            }
         ]
     },
    

@@ -70,26 +70,37 @@ function TicketList() {
         fetchTickets()
     }, [])
 
-    useEffect(() => {
-        if(!selectedEvent) return;
 
-        const fetchTicketsByEvent = async() =>{
-            try{
+    useEffect(() => {
+
+        const fetchTicketsByEvent = async () => {
+            try {
                 setLoading(true);
-                const res = await getTicketByEvent(selectedEvent);
-                setTickets(res)
-            }catch(error){
+                let res;
+                if (selectedEvent) {
+                    // fetch by selected event
+                    res = await getTicketByEvent(selectedEvent);
+                    setTickets(res);
+
+                } else {
+                    // fetch all tickets
+                    const all = await getTickets();
+                    setTickets(all.data);
+
+                }
+
+            } catch (error) {
                 console.error(error);
                 dispatch(showSnackbar({
-                    message:"Failed to fetch the tickets by event",
-                    severity:"error"
+                    message: "Failed to fetch the tickets by event",
+                    severity: "error"
                 }))
-            }finally{
+            } finally {
                 setLoading(false)
             }
         }
         fetchTicketsByEvent()
-    },[selectedEvent])
+    }, [selectedEvent])
     return (
         <Stack spacing={2}>
             <Stack>
@@ -115,11 +126,20 @@ function TicketList() {
                     <Box>
                         <TextField
                             select
-                            label="Select Event"
                             value={selectedEvent}
                             onChange={(e) => setSelectedEvent(e.target.value)}
                             sx={{ minWidth: 200 }}
+                            SelectProps={{
+                                displayEmpty: true, // 👈 important to show empty value
+                                renderValue: (selected) => {
+                                    if (selected === "") return "All Events"; // 👈 display All Events for empty
+                                    const event = events.find((e) => e.id === selected);
+                                    return event ? event.eventName : "All Events";
+                                },
+                            }}
                         >
+                            <MenuItem value="">All Events</MenuItem> {/*  add this */}
+
                             {events.map((event) => (
                                 <MenuItem key={event.id} value={event.id}>
                                     {event.eventName}

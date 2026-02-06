@@ -26,6 +26,7 @@ const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     { text: "Events", icon: <EventIcon />, path: "events" },
     { text: "Tickets", icon: <ConfirmationNumberIcon />, path: "ticket" },
+    { text :"Redemption" , icon :<ConfirmationNumberIcon/>,path:"redeem"},
     { text: "Users", icon: <PeopleIcon />, path: "user" },
     { text: "Report", icon: <SummarizeIcon />, path: "report" },
     { text: "Logout", icon: <LogoutIcon /> }
