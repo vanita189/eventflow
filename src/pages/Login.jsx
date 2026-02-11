@@ -9,13 +9,26 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
 
 function Login() {
-    const { login,user,loading } = useAuth();
+    const { login, user, loading } = useAuth();
     const navigate = useNavigate();
-    const[email,setEmail] = useState("");
-    const[password,setPassword] = useState("");
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+
+
+
+    useEffect(() => {
+        if (!loading && user) {
+            navigate("/dashboardlayout");
+        }
+    }, [user, loading, navigate])
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -29,10 +42,10 @@ function Login() {
     }
 
     useEffect(() => {
-        if(!loading && user){
+        if (!loading && user) {
             navigate("/dashboardlayout");
         }
-    },[user,loading,navigate])
+    }, [user, loading, navigate])
 
     return (
         <form onSubmit={handleSubmit}>
@@ -82,7 +95,7 @@ function Login() {
                                 placeholder="Enter your email"
                                 variant="outlined"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value) }
+                                onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="username"
                                 InputProps={{
                                     startAdornment: (
@@ -128,7 +141,7 @@ function Login() {
                             <Typography fontWeight={700} fontSize={15} py={1}>Password</Typography>
                             <TextField
                                 fullWidth
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -139,6 +152,16 @@ function Login() {
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <LockOutlinedIcon sx={{ color: "#9e9e9e" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                            </IconButton>
                                         </InputAdornment>
                                     )
                                 }}
@@ -221,3 +244,4 @@ function Login() {
 }
 
 export default Login;
+

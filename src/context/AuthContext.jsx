@@ -7,8 +7,8 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [ loading, setLoading] = useState(true);
-   
-    
+
+
     //Auto restore user on refresh
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth , (firebaseUser) =>{
@@ -50,3 +50,6 @@ export const AuthProvider = ({children}) => {
 
 
 export const useAuth = () => useContext(AuthContext);
+
+
+

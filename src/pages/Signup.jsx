@@ -9,12 +9,16 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 function Signup() {
     const { signup } = useAuth();
     const navigate = useNavigate();
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("")
+    const [showPassword,setShowPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -119,7 +123,7 @@ function Signup() {
                             <Typography fontWeight={700} fontSize={15} py={1}>Password</Typography>
                             <TextField
                                 fullWidth
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -128,6 +132,16 @@ function Signup() {
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <LockOutlinedIcon sx={{ color: "#9e9e9e" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                            </IconButton>
                                         </InputAdornment>
                                     )
                                 }}
@@ -211,3 +225,4 @@ function Signup() {
 }
 
 export default Signup;
+
