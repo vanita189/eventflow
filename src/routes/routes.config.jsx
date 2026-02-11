@@ -12,6 +12,7 @@ import EditEvent from "../pages/createevents/EditEvent";
 import CreateTicket from "../pages/createtickets/CreateTicket";
 import TicketList from "../pages/createtickets/TicketList";
 import TicketRedemption from "../pages/reedemption/TicketRedemption";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export const publicRoutes = [
     {
@@ -21,6 +22,10 @@ export const publicRoutes = [
     {
         path: "/signup",
         element: <Signup />,
+    },
+    {
+        path: "forgot-password",
+        element: <ForgotPassword />
     }
 ];
 

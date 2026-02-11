@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged , signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged , signOut, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../config/firebase";
 
 export const AuthContext = createContext(null);
@@ -9,6 +9,9 @@ export const AuthProvider = ({children}) => {
     const [ loading, setLoading] = useState(true);
 
 
+    const forgotPassword = (email) => {
+        return sendPasswordResetEmail(auth, email);
+    }
     //Auto restore user on refresh
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth , (firebaseUser) =>{
@@ -42,7 +45,7 @@ export const AuthProvider = ({children}) => {
     }
 
     return(
-        <AuthContext.Provider value={{user,signup,login,logout,loading}}>
+        <AuthContext.Provider value={{user,signup,login,logout,loading, forgotPassword}}>
             {children}
         </AuthContext.Provider>
     )

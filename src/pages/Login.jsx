@@ -160,7 +160,7 @@ function Login() {
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 edge="end"
                                             >
-                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
                                             </IconButton>
                                         </InputAdornment>
                                     )
@@ -202,7 +202,13 @@ function Login() {
                         </Box>
                         <Box display="flex" justifyContent="space-between">
                             <Typography fontWeight={750} fontSize={12}>Remember me</Typography>
-                            <Typography fontWeight={750} fontSize={12}>Forgot Password</Typography>
+                            <Typography
+                                fontWeight={750}
+                                fontSize={12}
+                                sx={{cursor:"pointer" ,color:"#2288eeff"}}
+                                onClick={()=> navigate("/forgot-password")}
+
+                            >Forgot Password</Typography>
                         </Box>
                         <Button fullWidth variant="contained" mt={10} type="submit"
                             sx={{
