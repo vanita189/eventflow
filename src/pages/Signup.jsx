@@ -16,15 +16,15 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 function Signup() {
     const { signup } = useAuth();
     const navigate = useNavigate();
-    const [email,setEmail] = useState("");
-    const [password,setPassword] = useState("")
-    const [showPassword,setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const user=  await signup(email, password);
+            const user = await signup(email, password);
             console.log("ignup successful", user);
             navigate("/")
         } catch (err) {
@@ -140,7 +140,7 @@ function Signup() {
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 edge="end"
                                             >
-                                                {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
                                             </IconButton>
                                         </InputAdornment>
                                     )
@@ -181,7 +181,7 @@ function Signup() {
                             />
                         </Box>
                         <Box display="flex" justifyContent="space-between">
-                            <Typography fontWeight={750} fontSize={12}>Remember me</Typography>
+                            {/* <Typography fontWeight={750} fontSize={12}>Remember me</Typography> */}
                             <Typography fontWeight={750} fontSize={12}></Typography>
                         </Box>
                         <Button fullWidth variant="contained" mt={10} type="submit"

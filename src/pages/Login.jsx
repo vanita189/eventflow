@@ -201,7 +201,7 @@ function Login() {
                             />
                         </Box>
                         <Box display="flex" justifyContent="space-between">
-                            <Typography fontWeight={750} fontSize={12}>Remember me</Typography>
+                            {/* <Typography fontWeight={750} fontSize={12}></Typography> */}
                             <Typography
                                 fontWeight={750}
                                 fontSize={12}
