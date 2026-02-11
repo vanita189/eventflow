@@ -1,58 +1,74 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged , signOut, sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { supabase } from "../config/supabase";
 
 export const AuthContext = createContext(null);
 
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [ loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
-
-    const forgotPassword = (email) => {
-        return sendPasswordResetEmail(auth, email);
-    }
-    //Auto restore user on refresh
+    // Restore session
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth , (firebaseUser) =>{
-            console.log("FirebaseUSer" , firebaseUser)
-            setUser(firebaseUser);
+        const getSession = async () => {
+            const { data } = await supabase.auth.getSession();
+            setUser(data.session?.user || null);
             setLoading(false);
+        };
+
+        getSession();
+
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setUser(session?.user || null);
+            }
+        );
+
+        return () => listener.subscription.unsubscribe();
+    }, []);
+
+    // Signup
+    const signup = async (email, password) => {
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
         });
 
-        return () => unsubscribe();
-    },[])
+        if (error) throw error;
+        return data.user;
+    };
 
-    //Signup api
-    const signup = async(email,password) => {
-        const res = await createUserWithEmailAndPassword(
-            auth,
+    // Login
+    const login = async (email, password) => {
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
-            password
-        )
-        console.log("firebase created user", res.user)
-        return res.user;
-    }
+            password,
+        });
 
-    //login api
-    const login = (email, password) => {
-        return signInWithEmailAndPassword(auth,email,password)
-    }
+        if (error) throw error;
+        return data.user;
+    };
 
-    //logout
-    const logout = () => {
-        signOut(auth);
-    }
+    // Forgot Password
+    const forgotPassword = async (email) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: "http://localhost:5173/reset-password", // change for prod
+        });
 
-    return(
-        <AuthContext.Provider value={{user,signup,login,logout,loading, forgotPassword}}>
+        if (error) throw error;
+    };
+
+    // Logout
+    const logout = async () => {
+        await supabase.auth.signOut();
+    };
+
+    return (
+        <AuthContext.Provider
+            value={{ user, signup, login, logout, loading, forgotPassword }}
+        >
             {children}
         </AuthContext.Provider>
-    )
-}
-
+    );
+};
 
 export const useAuth = () => useContext(AuthContext);
-
-
-
