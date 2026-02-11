@@ -12,10 +12,13 @@ import { useAuth } from "../context/AuthContext";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../redux/snackbar/snackbarSlice";
 
 function Signup() {
     const { signup } = useAuth();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false);
@@ -26,9 +29,20 @@ function Signup() {
         try {
             const user = await signup(email, password);
             console.log("ignup successful", user);
+            dispatch(
+                showSnackbar({
+                    message: "Signup successful 🎉",
+                    severity: "success",
+                })
+            );
             navigate("/")
         } catch (err) {
-            alert(err.message);
+            dispatch(
+                showSnackbar({
+                    message: err.message || "Signup failed",
+                    severity: "error",
+                })
+            );
         }
     }
 
@@ -181,8 +195,8 @@ function Signup() {
                             />
                         </Box>
                         <Box display="flex" justifyContent="space-between">
-                            {/* <Typography fontWeight={750} fontSize={12}>Remember me</Typography> */}
-                            <Typography fontWeight={750} fontSize={12}></Typography>
+                            {/* <Typography fontWeight={750} fontSize={12}>Remember me</Typography>
+                            <Typography fontWeight={750} fontSize={12}></Typography> */}
                         </Box>
                         <Button fullWidth variant="contained" mt={10} type="submit"
                             // onClick={() => navigate("/dashboard")}

@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-lea
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { FaSearch } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../redux/snackbar/snackbarSlice";
 
 /* Fix default marker icon */
 delete L.Icon.Default.prototype._getIconUrl;
@@ -54,7 +56,7 @@ function EventLocationPicker({ value, onChange }) {
   const [position, setPosition] = useState(null);
   const [address, setAddress] = useState("");
   const [search, setSearch] = useState("");
-
+  const dispatch = useDispatch();
   /* Load saved location */
   useEffect(() => {
     if (value?.lat && value?.lng) {
@@ -84,10 +86,20 @@ function EventLocationPicker({ value, onChange }) {
 
         onChange?.({ lat, lng, address: addr });
       } else {
-        alert("Location not found");
+        dispatch(
+          showSnackbar({
+            message: "Location not found",
+            severity: "warning",
+          })
+        )
       }
     } catch {
-      alert("Error searching location");
+      dispatch(
+        showSnackbar({
+          message: "Error searching location",
+          severity: "error",
+        })
+      );
     }
   };
 

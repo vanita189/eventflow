@@ -10,6 +10,8 @@ import {
 import Editor from "../../components/Editor";
 import { useState } from "react";
 import PrimaryButton from "../../components/PrimaryButton";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../../redux/snackbar/snackbarSlice";
 
 const ENTRY_TYPES = [
   "Free Entry",
@@ -36,6 +38,7 @@ function EventPackage({
 }) {
   const [draftForm, setDraftForm] = useState(EMPTY_FORM);
   const [editingId, setEditingId] = useState(null);
+  const dispatch = useDispatch();
 
   const isFreeEntry = draftForm.packageName === "Free Entry";
 
@@ -76,7 +79,12 @@ function EventPackage({
       !draftForm.allowedPersons ||
       !draftForm.quantity
     ) {
-      alert("Please fill required fields");
+      dispatch(
+        showSnackbar({
+          message: "Please fill required fields",
+          severity: "warning",
+        })
+      );
       return;
     }
 

@@ -2,25 +2,42 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../config/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged , signOut, sendPasswordResetEmail } from "firebase/auth";
+import { showSnackbar } from "../redux/snackbar/snackbarSlice";
+import { useDispatch } from "react-redux";
 
 function ForgotPassword() {
   const { forgotPassword } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleReset = async () => {
-    if (!email) return alert("Please enter your email");
+    if (!email) return
+    dispatch(
+      showSnackbar({
+        message: "Please enter your email",
+        severity: "warning",
+      })
+    )
 
     try {
       setLoading(true);
       await forgotPassword(email);
-      alert("Password reset link sent to your email 📩");
+      dispatch(
+        showSnackbar({
+          message: "Password reset link sent to your email ",
+          severity: "success",
+        })
+      );
       navigate("/");
     } catch (error) {
-      alert(error.message);
+      dispatch(
+        showSnackbar({
+          message: error.message || "Failed to send password reset link",
+          severity: "error",
+        })
+      );
     } finally {
       setLoading(false);
     }

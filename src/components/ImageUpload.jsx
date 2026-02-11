@@ -5,10 +5,13 @@ import Box from "@mui/material/Box";
 import CloseIcon from '@mui/icons-material/Close';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { uploadImage } from "../api/uploadImage"
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../redux/snackbar/snackbarSlice";
 
 function ImageUpload({ value, onChange }) {
     const inputRef = useRef(null);
     const [uploading, setUploading] = useState(false); // optional: show loading state
+    const dispatch = useDispatch();
 
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
@@ -16,7 +19,12 @@ function ImageUpload({ value, onChange }) {
 
         // Basic validation
         if (!file.type.startsWith("image/")) {
-            alert("Only image files are allowed");
+            dispatch(
+                showSnackbar({
+                    message: "Only image files are allowed",
+                    severity: "error",
+                })
+            )
             return;
         }
 
@@ -31,7 +39,12 @@ function ImageUpload({ value, onChange }) {
 
         } catch (err) {
             console.error("Upload failed:", err.message);
-            alert("Image upload failed. Try again!");
+            dispatch(
+                showSnackbar({
+                    message: err.message || "Image upload failed. Try again!",
+                    severity: "error",
+                })
+            )
         } finally {
             setUploading(false); // end loading
         }

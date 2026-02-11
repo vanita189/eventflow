@@ -1,6 +1,8 @@
 import { Stack, Box, Typography, TextField, MenuItem, Paper, Divider } from "@mui/material"
 import { useState } from "react"
 import PrimaryButton from "../../components/PrimaryButton";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../../redux/snackbar/snackbarSlice";
 
 const ENTRY_TYPES = [
     "Free Entry",
@@ -26,6 +28,7 @@ function EditEventPackages({
 }) {
     const [draftForm, setDraftForm] = useState(EMPTY_FORM);
     const [editingId, setEditingId] = useState(null)
+    const dispatch = useDispatch();
 
     const isFreeEntry = draftForm.packageName === "Free Entry"
 
@@ -62,7 +65,12 @@ function EditEventPackages({
             !draftForm.allowedPersons ||
             !draftForm.quantity
         ) {
-            alert("Please fill required fields")
+            dispatch(
+                showSnackbar({
+                    message: "Please fill required fields",
+                    severity: "warning",
+                })
+            )
             return
         }
 

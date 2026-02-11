@@ -12,11 +12,12 @@ import { useAuth } from "../context/AuthContext";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
-
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "../redux/snackbar/snackbarSlice";
 function Login() {
     const { login, user, loading } = useAuth();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -35,9 +36,20 @@ function Login() {
         try {
             await login(email, password);
             // navigate("/dashboard");
+            dispatch(
+                showSnackbar({
+                    message: "Login successful 🎉",
+                    severity: "success",
+                })
+            );
 
         } catch (err) {
-            alert(err.message)
+            dispatch(
+                showSnackbar({
+                    message: err.message || "Login failed",
+                    severity: "error",
+                })
+            );
         }
     }
 
@@ -201,12 +213,12 @@ function Login() {
                             />
                         </Box>
                         <Box display="flex" justifyContent="space-between">
-                            {/* <Typography fontWeight={750} fontSize={12}></Typography> */}
+                            <Typography fontWeight={750} fontSize={12}></Typography>
                             <Typography
                                 fontWeight={750}
                                 fontSize={12}
-                                sx={{cursor:"pointer" ,color:"#2288eeff"}}
-                                onClick={()=> navigate("/forgot-password")}
+                                sx={{ cursor: "pointer", color: "#2288eeff" }}
+                                onClick={() => navigate("/forgot-password")}
 
                             >Forgot Password</Typography>
                         </Box>
