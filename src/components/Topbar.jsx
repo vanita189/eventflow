@@ -9,9 +9,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+import { useAuth } from "../context/AuthContext";
 
-function Topbar({setMobileOpen,isMobile}) {
+function Topbar({ setMobileOpen, isMobile }) {
     const [anchorEl, setAnchorEl] = useState(null)
+    const { profile, user } = useAuth(); // ✅ get profile & user
+
     return (
         <AppBar position="fixed" sx={{
             backgroundColor: "#fff",
@@ -44,6 +47,14 @@ function Topbar({setMobileOpen,isMobile}) {
                     onClick={(e) => setAnchorEl(e.currentTarget)}>
                     <Avatar />
                 </IconButton>
+                <Box sx={{ mr: 1, textAlign: "right" }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {profile?.name || user?.email}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: "gray" }}>
+                        {profile?.role || "user"}
+                    </Typography>
+                </Box>
 
                 <Menu
                     anchorEl={anchorEl}

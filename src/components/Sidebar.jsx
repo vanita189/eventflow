@@ -26,7 +26,7 @@ const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     { text: "Events", icon: <EventIcon />, path: "events" },
     { text: "Tickets", icon: <ConfirmationNumberIcon />, path: "ticket" },
-    { text :"Redemption" , icon :<ConfirmationNumberIcon/>,path:"redeem"},
+    { text: "Redemption", icon: <ConfirmationNumberIcon />, path: "redeem" },
     { text: "Users", icon: <PeopleIcon />, path: "user" },
     { text: "Report", icon: <SummarizeIcon />, path: "report" },
     { text: "Logout", icon: <LogoutIcon /> }
@@ -34,7 +34,7 @@ const menuItems = [
 
 function Sidebar({ isMobile, setCollapsed, collapsed, mobileOpen, setMobileOpen }) {
     const { logout } = useAuth();
-    const navigate =useNavigate();
+    const navigate = useNavigate();
     const isCollapsed = isMobile || collapsed;
 
     const handleMenuClick = async (item) => {
@@ -72,6 +72,7 @@ function Sidebar({ isMobile, setCollapsed, collapsed, mobileOpen, setMobileOpen 
                     overflowX: "hidden",
                     boxShadow: "4px 0 12px rgba(0,0,0,0.08)",
                     transition: "width 0.3s ease",
+                    // backgroundColor: "#0c0c0c",
 
                 },
             }}
