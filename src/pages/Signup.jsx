@@ -14,6 +14,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "../redux/snackbar/snackbarSlice";
+import PersonIcon from '@mui/icons-material/Person';
+import OtherHousesIcon from '@mui/icons-material/OtherHouses';
 
 function Signup() {
     const { signup } = useAuth();
@@ -22,6 +24,31 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false);
+    const [name, setName] = useState("");
+    const [companyName, setCompanyName] = useState("");
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const user = await signup( email, password);
+    //         console.log("Signup successful", user);
+    //         dispatch(
+    //             showSnackbar({
+    //                 message: "Signup successful 🎉",
+    //                 severity: "success",
+    //             })
+    //         );
+    //         navigate("/")
+    //     } catch (err) {
+    //         dispatch(
+    //             showSnackbar({
+    //                 message: err.message || "Signup failed",
+    //                 severity: "error",
+    //             })
+    //         );
+    //     }
+    // }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,7 +62,7 @@ function Signup() {
                     severity: "success",
                 })
             );
-            navigate("/")
+            navigate("/dashboardlayout")
         } catch (err) {
             dispatch(
                 showSnackbar({
@@ -45,7 +72,6 @@ function Signup() {
             );
         }
     }
-
     return (
         <form onSubmit={handleSubmit}>
 
@@ -85,6 +111,8 @@ function Signup() {
                         <Typography variant="h4" fontWeight="bold" color="#2288eeff" py={3} mt={10}>
                             Signup to continue
                         </Typography>
+
+
                         <Box py={1}>
                             <Typography fontWeight={700} fontSize={15} py={1}>Email address</Typography>
                             <TextField

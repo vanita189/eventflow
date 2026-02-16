@@ -6,77 +6,76 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [profile, setProfile] = useState(null);
-    const [profileLoading, setProfileLoading] = useState(false);
+    // const [profile, setProfile] = useState(null);
+    // const [profileLoading, setProfileLoading] = useState(false);
 
-    //fetch user profile
-    const fetchProfile = async (userId) => {
-        setProfileLoading(true);
+    // //fetch user profile
+    // const fetchProfile = async (userId) => {
+    //     setProfileLoading(true);
 
-        const { data, error } = await supabase
-            .from("profiles")
-            .select("*")
-            .eq("id", userId)
-            .maybeSingle();
+    //     const { data, error } = await supabase
+    //         .from("profiles")
+    //         .select("*")
+    //         .eq("id", userId)
+    //         .maybeSingle();
 
-        if (!error) setProfile(data);
+    //     if (!error) setProfile(data);
 
-        setProfileLoading(false);
-    };
-
-    useEffect(() => {
-        const initAuth = async () => {
-            const { data } = await supabase.auth.getSession();
-            const sessionUser = data?.session?.user || null;
-
-            setUser(sessionUser);
-            setLoading(false); // ✅ UI should not wait for profile
-
-            if (sessionUser) {
-                fetchProfile(sessionUser.id); // ✅ async profile fetch
-            }
-        };
-
-        initAuth();
-
-        const { data: listener } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-                const sessionUser = session?.user || null;
-                setUser(sessionUser);
-                setLoading(false);
-
-                if (sessionUser) {
-                    fetchProfile(sessionUser.id);
-                } else {
-                    setProfile(null);
-                }
-            }
-        );
-
-        return () => listener.subscription.unsubscribe();
-    }, []);
-
-
-
+    //     setProfileLoading(false);
+    // };
 
     // useEffect(() => {
-    //     const getSession = async () => {
+    //     const initAuth = async () => {
     //         const { data } = await supabase.auth.getSession();
-    //         setUser(data.session?.user || null);
-    //         setLoading(false);
+    //         const sessionUser = data?.session?.user || null;
+
+    //         setUser(sessionUser);
+    //         setLoading(false); // ✅ UI should not wait for profile
+
+    //         if (sessionUser) {
+    //             fetchProfile(sessionUser.id); // ✅ async profile fetch
+    //         }
     //     };
 
-    //     getSession();
+    //     initAuth();
 
     //     const { data: listener } = supabase.auth.onAuthStateChange(
     //         (_event, session) => {
-    //             setUser(session?.user || null);
+    //             const sessionUser = session?.user || null;
+    //             setUser(sessionUser);
+    //             setLoading(false);
+
+    //             if (sessionUser) {
+    //                 fetchProfile(sessionUser.id);
+    //             } else {
+    //                 setProfile(null);
+    //             }
     //         }
     //     );
 
     //     return () => listener.subscription.unsubscribe();
     // }, []);
 
+
+
+
+    useEffect(() => {
+        const getSession = async () => {
+            const { data } = await supabase.auth.getSession();
+            setUser(data.session?.user || null);
+            setLoading(false);
+        };
+
+        getSession();
+
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            (_event, session) => {
+                setUser(session?.user || null);
+            }
+        );
+
+        return () => listener.subscription.unsubscribe();
+    }, []);
     const signup = async (email, password) => {
         const { data, error } = await supabase.auth.signUp({
             email,
@@ -86,6 +85,8 @@ export const AuthProvider = ({ children }) => {
         if (error) throw error;
         return data.user;
     };
+
+
 
     // Login
     const login = async (email, password) => {
@@ -118,7 +119,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={{ user, profile, signup, login, logout, loading, forgotPassword }}
+            value={{ user, signup, login, logout, loading, forgotPassword }}
         >
             {children}
         </AuthContext.Provider>
