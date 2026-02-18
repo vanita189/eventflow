@@ -62,7 +62,7 @@ function Signup() {
                     severity: "success",
                 })
             );
-            navigate("/dashboardlayout")
+            navigate("/onboarding")
         } catch (err) {
             dispatch(
                 showSnackbar({

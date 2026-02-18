@@ -13,7 +13,8 @@ import CreateTicket from "../pages/createtickets/CreateTicket";
 import TicketList from "../pages/createtickets/TicketList";
 import TicketRedemption from "../pages/reedemption/TicketRedemption";
 import ForgotPassword from "../pages/ForgotPassword";
-
+import Onboarding from "../pages/Onboarding";
+import Profile from "../pages/Profile";
 export const publicRoutes = [
     {
         path: "/",
@@ -24,12 +25,13 @@ export const publicRoutes = [
         element: <Signup />,
     },
     {
-        path: "forgot-password",
+        path: "/forgot-password",
         element: <ForgotPassword />
     }
 ];
 
 export const privateRoutes = [
+
     {
         path: "/dashboardlayout",
         element: <DashboardLayout />,
@@ -38,6 +40,8 @@ export const privateRoutes = [
                 index: true,
                 element: <Dashboard />
             },
+            { path: "profile", element: <Profile /> }, // ✅ Add profile page
+
             {
                 path: "events",
                 element: <Event />
@@ -59,23 +63,23 @@ export const privateRoutes = [
                 element: <Report />
             },
             {
-                path:"events/view/:id",
-                element:<EventDetails/>
+                path: "events/view/:id",
+                element: <EventDetails />
             },
             {
-                path:"events/edit/:id",
-                element:<EditEvent/>
+                path: "events/edit/:id",
+                element: <EditEvent />
             },
             {
-                path:"ticket/create",
-                element:<CreateTicket/>
+                path: "ticket/create",
+                element: <CreateTicket />
             },
             {
-                path:"redeem",
-                element:<TicketRedemption/>
+                path: "redeem",
+                element: <TicketRedemption />
             }
         ]
     },
-   
+
 
 ];

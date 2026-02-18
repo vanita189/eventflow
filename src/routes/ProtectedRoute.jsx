@@ -1,22 +1,36 @@
+// import { useContext, useEffect, useState } from "react";
+// import { Navigate } from "react-router-dom";
+// import { AuthContext } from "../context/AuthContext";
+// import { supabase } from "../config/supabase";
+
+// const ProtectedRoute = ({ children }) => {
+//   const { user, loading } = useContext(AuthContext);
+
+//   if (loading) return <div>Loading...</div>;
+
+//   if (!user) {
+//     return <Navigate to="/" replace />;
+//   }
+
+//   return children;
+// };
+
+
+
+
+// export default ProtectedRoute;
 import { useContext } from "react";
+import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import {Navigate} from "react-router-dom"
-import { useAuth } from "../context/AuthContext";
 
-const ProtectedRoute = ({ children }) =>{
-    const {user,loading} = useAuth();
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useContext(AuthContext);
 
-if (loading) {
-    return <div>Loading...</div>; // ✅ never return null
-  }
+  if (loading) return <div>Loading...</div>;
 
-    if(!user) {
-        return <Navigate to="/" replace/>
-    }
-    
-   
+  if (!user) return <Navigate to="/" replace />;
 
-    return children ;
-}
+  return children;
+};
 
 export default ProtectedRoute;

@@ -6,7 +6,8 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState(null);
+    
     // const [profileLoading, setProfileLoading] = useState(false);
 
     // //fetch user profile
@@ -56,13 +57,25 @@ export const AuthProvider = ({ children }) => {
     //     return () => listener.subscription.unsubscribe();
     // }, []);
 
-
+    // In AuthContext.jsx
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!user) return;
+            const { data } = await supabase
+                .from("profiles")
+                .select("*")
+                .eq("id", user.id)
+                .single();
+            setProfile(data); // add profile to context
+        };
+        fetchProfile();
+    }, [user]);
 
 
     useEffect(() => {
         const getSession = async () => {
             const { data } = await supabase.auth.getSession();
-            setUser(data.session?.user || null);
+            setUser(data.session?.user ?? null);
             setLoading(false);
         };
 
@@ -70,11 +83,13 @@ export const AuthProvider = ({ children }) => {
 
         const { data: listener } = supabase.auth.onAuthStateChange(
             (_event, session) => {
-                setUser(session?.user || null);
+                setUser(session?.user ?? null);
             }
         );
 
-        return () => listener.subscription.unsubscribe();
+        return () => {
+            listener.subscription.unsubscribe();
+        };
     }, []);
     const signup = async (email, password) => {
         const { data, error } = await supabase.auth.signUp({
@@ -119,7 +134,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider
-            value={{ user, signup, login, logout, loading, forgotPassword }}
+            value={{ user, profile, signup, login, logout, loading, forgotPassword }}
         >
             {children}
         </AuthContext.Provider>

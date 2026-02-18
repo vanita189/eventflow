@@ -10,11 +10,12 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 function Topbar({ setMobileOpen, isMobile }) {
     const [anchorEl, setAnchorEl] = useState(null)
     const { profile, user } = useAuth(); // ✅ get profile & user
-
+    const navigate = useNavigate();
     return (
         <AppBar position="fixed" sx={{
             backgroundColor: "#fff",
@@ -45,14 +46,15 @@ function Topbar({ setMobileOpen, isMobile }) {
                         },
                     }}
                     onClick={(e) => setAnchorEl(e.currentTarget)}>
-                    <Avatar />
+                    <Avatar src={profile?.profile_photo || ""}
+                        alt={profile?.customer_name || ""} />
                 </IconButton>
                 <Box sx={{ mr: 1, textAlign: "right" }}>
                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {profile?.name || user?.email}
+                        {profile?.customer_name}
                     </Typography>
                     <Typography variant="caption" sx={{ color: "gray" }}>
-                        {profile?.role || "user"}
+                        {profile?.role}
                     </Typography>
                 </Box>
 
@@ -66,8 +68,8 @@ function Topbar({ setMobileOpen, isMobile }) {
                     }}
 
                 >
-                    <MenuItem>Profile</MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={() => navigate("/dashboardlayout/profile")}>Profile</MenuItem>
+                    <MenuItem onClick={() => navigate("/")}>Logout</MenuItem>
                 </Menu>
             </Toolbar>
 
